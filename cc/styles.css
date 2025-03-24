@@ -50,24 +50,52 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
-    height: 100vh;
+    min-height: 100vh;
+    height: -webkit-fill-available; /* For Safari */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fix for Firefox mobile */
+@-moz-document url-prefix() {
+    body {
+        height: 100%;
+        min-height: 100vh;
+    }
+    
+    html {
+        height: -moz-available;
+        min-height: 100vh;
+    }
 }
 
 .container {
     width: 100%;
     max-width: 375px;
-    height: 100%;
-    max-height: 812px;
+    height: auto;
+    min-height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 20px;
     position: relative;
-    overflow: hidden;
-    border-radius: 40px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 20px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Firefox-specific container fixes */
+@-moz-document url-prefix() {
+    .container {
+        height: auto;
+        min-height: calc(100vh - 40px);
+        max-height: none;
+        border-radius: 0;
+    }
 }
 
 .header {
@@ -200,6 +228,7 @@ body {
     position: relative;
     width: 200px;
     height: 200px;
+    margin: 0 auto;
 }
 
 .ring-background {
@@ -521,6 +550,30 @@ body.month-view-active #month-view {
 }
 
 @media (max-width: 480px) {
+    .container {
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 15px;
+    }
+    
+    .calorie-display {
+        margin: 10px 0 30px;
+    }
+    
+    .calorie-buttons {
+        margin-bottom: 30px;
+    }
+    
+    .calorie-buttons button {
+        padding: 10px 25px;
+        font-size: 16px;
+    }
+    
+    #calorie-value {
+        font-size: 42px;
+    }
+    
     .calendar-day {
         min-height: 40px;
         padding: 3px;
@@ -532,5 +585,18 @@ body.month-view-active #month-view {
     
     .calorie-value {
         font-size: 10px;
+    }
+}
+
+/* Firefox-specific SVG fixes */
+@-moz-document url-prefix() {
+    .progress-ring svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    
+    .ring-progress {
+        transform: rotate(-90deg) translateZ(0);
     }
 }
