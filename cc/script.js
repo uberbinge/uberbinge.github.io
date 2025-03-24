@@ -63,6 +63,11 @@ function setupEventListeners() {
     // Modal buttons
     document.getElementById('modal-confirm').addEventListener('click', confirmModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    
+    // GitHub button
+    document.getElementById('github-link').addEventListener('click', () => {
+        window.open('https://github.com/uberbinge/uberbinge.github.io/tree/main/cc', '_blank');
+    });
 }
 
 // Export data to JSON file
@@ -231,6 +236,7 @@ function closeModal() {
 const timeElapsedEl = document.getElementById('time-elapsed');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const resetBtn = document.getElementById('reset-btn');
+const githubBtn = document.getElementById('github-link');
 const bmrSlider = document.getElementById('bmr-slider');
 const bmrValues = document.querySelectorAll('.bmr-value');
 const calorieValueEl = document.getElementById('calorie-value');

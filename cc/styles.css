@@ -125,7 +125,18 @@ body {
     font-size: 14px;
     cursor: pointer;
     color: var(--text-color);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls button:hover {
+    transform: translateY(-2px);
+}
+
+.controls button:active {
+    transform: translateY(0);
 }
 
 #reset-btn {
@@ -137,6 +148,19 @@ body {
     color: white !important;
     transform: scale(1.05);
     transition: all 0.3s ease;
+}
+
+#github-link {
+    padding: 5px 8px;
+}
+
+.github-icon {
+    fill: var(--text-color);
+    transition: fill 0.3s;
+}
+
+#github-link:hover .github-icon {
+    fill: var(--primary-color);
 }
 
 .bmr-section {
@@ -221,14 +245,21 @@ body {
     align-items: center;
     margin: 20px 0 40px;
     transition: opacity 0.3s, height 0.3s;
-    overflow: hidden;
+    overflow: visible;
+    min-height: 220px;
 }
 
 .progress-ring {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     margin: 0 auto;
+}
+
+.ring {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
 }
 
 .ring-background {
@@ -283,6 +314,11 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.1s, opacity 0.3s;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
 }
 
 .calorie-buttons button:active {
@@ -297,6 +333,15 @@ body {
 .subtract-btn {
     background-color: var(--subtract-btn-bg);
     color: var(--subtract-btn-color);
+}
+
+/* Firefox-specific button fixes */
+@-moz-document url-prefix() {
+    .calorie-buttons button {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
 }
 
 .dots {
@@ -333,15 +378,6 @@ body {
 
 .github-link:hover {
     opacity: 1;
-}
-
-.github-icon {
-    fill: var(--text-color);
-}
-
-.github-icon:hover {
-    transform: scale(1.1);
-    fill: var(--primary-color);
 }
 
 /* Data management */
@@ -590,6 +626,16 @@ body.month-view-active #month-view {
 
 /* Firefox-specific SVG fixes */
 @-moz-document url-prefix() {
+    .calorie-display {
+        padding: 20px 0;
+        min-height: 240px;
+    }
+    
+    .progress-ring {
+        transform: scale(0.85);
+        margin: 10px auto;
+    }
+    
     .progress-ring svg {
         width: 100%;
         height: 100%;
@@ -598,5 +644,28 @@ body.month-view-active #month-view {
     
     .ring-progress {
         transform: rotate(-90deg) translateZ(0);
+    }
+    
+    /* Additional Firefox mobile fixes */
+    @media (max-width: 480px) {
+        .calorie-display {
+            padding: 25px 0;
+        }
+        
+        .progress-ring {
+            transform: scale(0.8);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .progress-ring {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .calorie-display {
+        min-height: 180px;
+        margin: 10px 0 20px;
     }
 }
