@@ -787,3 +787,39 @@ body.month-view-active #month-view {
         height: 100%;
     }
 }
+
+/* Safari-specific calendar fixes */
+@supports (-webkit-touch-callout: none) {
+    .view {
+        display: none;
+        width: 100%;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+
+    .view.active {
+        display: block !important;
+        max-height: 70vh;
+        overflow-y: auto;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .calendar-container {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .calendar-container.active {
+        display: flex !important;
+        opacity: 1 !important;
+        height: auto !important;
+    }
+
+    #week-view, #month-view {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}

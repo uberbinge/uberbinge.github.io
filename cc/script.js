@@ -460,6 +460,8 @@ function switchView(viewType) {
     
     calendarContainers.forEach(container => {
         container.classList.remove('active');
+        // Force reflow
+        void container.offsetHeight;
     });
     
     // Show selected view and activate button
@@ -473,15 +475,28 @@ function switchView(viewType) {
         weekViewBtn.classList.add('active');
         document.body.classList.add('week-view-active');
         calorieDisplay.style.display = 'none';
-        document.querySelector('#week-view .calendar-container').classList.add('active');
+        const weekContainer = document.querySelector('#week-view .calendar-container');
+        weekContainer.classList.add('active');
+        // Force reflow
+        void weekContainer.offsetHeight;
         updateWeekCalendar();
     } else if (viewType === 'month') {
         monthView.classList.add('active');
         monthViewBtn.classList.add('active');
         document.body.classList.add('month-view-active');
         calorieDisplay.style.display = 'none';
-        document.querySelector('#month-view .calendar-container').classList.add('active');
+        const monthContainer = document.querySelector('#month-view .calendar-container');
+        monthContainer.classList.add('active');
+        // Force reflow
+        void monthContainer.offsetHeight;
         updateMonthCalendar();
+    }
+    
+    // Force a repaint in Safari
+    if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
+        document.body.style.webkitTransform = 'scale(1)';
+        void document.body.offsetHeight;
+        document.body.style.webkitTransform = '';
     }
 }
 
