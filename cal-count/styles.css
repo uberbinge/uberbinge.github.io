@@ -1,0 +1,244 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+:root {
+    --primary-color: #4CAF50;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --secondary-bg: #f5f5f5;
+    --add-btn-bg: #ffdddd;
+    --add-btn-color: #ff5555;
+    --subtract-btn-bg: #ddffdd;
+    --subtract-btn-color: var(--primary-color);
+    --ring-bg: #eeeeee;
+}
+
+.dark-mode {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --secondary-bg: #1e1e1e;
+    --add-btn-bg: #3a2a2a;
+    --add-btn-color: #ff5555;
+    --subtract-btn-bg: #2a3a2a;
+    --subtract-btn-color: var(--primary-color);
+    --ring-bg: #333333;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 375px;
+    height: 100%;
+    max-height: 812px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-top: 20px;
+}
+
+.time-display {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+.controls button {
+    background-color: var(--secondary-bg);
+    border: none;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background-color 0.3s;
+}
+
+#reset-btn {
+    color: #3498db;
+}
+
+.reset-active {
+    background-color: #3498db !important;
+    color: white !important;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.bmr-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.bmr-label {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.bmr-values {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.bmr-value {
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.bmr-value.current {
+    font-size: 20px;
+    font-weight: bold;
+    opacity: 1;
+}
+
+#bmr-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--secondary-bg);
+    border-radius: 3px;
+    outline: none;
+}
+
+#bmr-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+.calorie-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 40px;
+}
+
+.progress-ring {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.ring-background {
+    fill: none;
+    stroke: var(--ring-bg);
+    stroke-width: 10;
+}
+
+.ring-progress {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.3s;
+}
+
+.calorie-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#calorie-value {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.unit {
+    font-size: 18px;
+    color: var(--primary-color);
+    opacity: 0.7;
+}
+
+.calorie-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+
+.calorie-buttons button {
+    border: none;
+    border-radius: 20px;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.3s;
+}
+
+.calorie-buttons button:active {
+    transform: scale(0.95);
+}
+
+.add-btn {
+    background-color: var(--add-btn-bg);
+    color: var(--add-btn-color);
+}
+
+.subtract-btn {
+    background-color: var(--subtract-btn-bg);
+    color: var(--subtract-btn-color);
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.dot.active {
+    opacity: 1;
+}
+
+.dot.surplus {
+    background-color: var(--add-btn-color);
+}
