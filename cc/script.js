@@ -281,6 +281,9 @@ function initializeUI() {
     // Set the ring's stroke properties
     ringProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
     updateProgressRing();
+    
+    // Update calendar views
+    updateCalendarViews();
 }
 
 function applyTheme() {
