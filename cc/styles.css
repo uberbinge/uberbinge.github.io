@@ -192,6 +192,8 @@ body {
     justify-content: center;
     align-items: center;
     margin: 20px 0 40px;
+    transition: opacity 0.3s, height 0.3s;
+    overflow: hidden;
 }
 
 .progress-ring {
@@ -240,6 +242,8 @@ body {
     display: flex;
     justify-content: space-around;
     margin-bottom: 40px;
+    transition: opacity 0.3s, height 0.3s;
+    overflow: hidden;
 }
 
 .calorie-buttons button {
@@ -454,17 +458,16 @@ body {
 }
 
 .calendar-day {
-    aspect-ratio: 1;
+    min-height: 50px;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: var(--secondary-bg);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    background-color: var(--secondary-bg);
-    border-radius: 8px;
-    padding: 5px;
-    font-size: 12px;
+    justify-content: center;
     position: relative;
-    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .calendar-day .day-label {
@@ -498,4 +501,36 @@ body {
     color: var(--text-color);
     opacity: 0.7;
     font-weight: bold;
+}
+
+/* Responsive layout for different views */
+body.week-view-active .calorie-display,
+body.week-view-active .calorie-buttons,
+body.month-view-active .calorie-display,
+body.month-view-active .calorie-buttons {
+    height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Make calendar views more prominent when active */
+body.week-view-active #week-view,
+body.month-view-active #month-view {
+    margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+    .calendar-day {
+        min-height: 40px;
+        padding: 3px;
+    }
+    
+    .day-label {
+        font-size: 12px;
+    }
+    
+    .calorie-value {
+        font-size: 10px;
+    }
 }

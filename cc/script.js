@@ -1,7 +1,7 @@
 // Initialize state
 let state = loadState() || {
     dayStart: getDayStartTime(),
-    bmr: 2000,
+    bmr: 1800,
     manualCalories: 0, // This tracks manually added/subtracted calories
     totalCalorieHistory: 0, // This tracks the total calorie history across days
     themeMode: 'auto', // 'auto', 'light', or 'dark'
@@ -432,25 +432,33 @@ function toggleTheme() {
 }
 
 function switchView(viewType) {
-    // Remove active class from all view buttons and views
-    dayViewBtn.classList.remove('active');
-    weekViewBtn.classList.remove('active');
-    monthViewBtn.classList.remove('active');
+    // Hide all views
     dayView.classList.remove('active');
     weekView.classList.remove('active');
     monthView.classList.remove('active');
     
-    // Add active class to the selected view
+    // Remove active class from all buttons
+    dayViewBtn.classList.remove('active');
+    weekViewBtn.classList.remove('active');
+    monthViewBtn.classList.remove('active');
+    
+    // Remove all view-related body classes
+    document.body.classList.remove('day-view-active', 'week-view-active', 'month-view-active');
+    
+    // Show selected view and activate button
     if (viewType === 'day') {
-        dayViewBtn.classList.add('active');
         dayView.classList.add('active');
+        dayViewBtn.classList.add('active');
+        document.body.classList.add('day-view-active');
     } else if (viewType === 'week') {
-        weekViewBtn.classList.add('active');
         weekView.classList.add('active');
+        weekViewBtn.classList.add('active');
+        document.body.classList.add('week-view-active');
         updateWeekCalendar();
     } else if (viewType === 'month') {
-        monthViewBtn.classList.add('active');
         monthView.classList.add('active');
+        monthViewBtn.classList.add('active');
+        document.body.classList.add('month-view-active');
         updateMonthCalendar();
     }
 }
