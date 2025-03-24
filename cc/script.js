@@ -16,8 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
     const CALORIES_PER_POUND = 3500; // 3500 kcal ≈ 1lb of fat
 
-    // Check for OS dark mode preference
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    // Check for OS dark mode preference - use a more reliable method for mobile
+    const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Force a repaint to ensure theme is applied correctly on iOS
+    document.body.style.display = 'none';
+    setTimeout(() => {
+        document.body.style.display = '';
+    }, 0);
 
     // State variables
     let state = loadState() || {
@@ -83,10 +89,17 @@ document.addEventListener('DOMContentLoaded', () => {
             themeToggleBtn.textContent = '🌙';
         } else {
             // Follow OS preference
-            if (prefersDarkScheme.matches) {
-                document.body.classList.add('dark-mode');
-                themeToggleBtn.textContent = '☀️';
-            } else {
+            try {
+                if (prefersDarkScheme && prefersDarkScheme.matches) {
+                    document.body.classList.add('dark-mode');
+                    themeToggleBtn.textContent = '☀️';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeToggleBtn.textContent = '🌙';
+                }
+            } catch (e) {
+                // Fallback if matchMedia fails
+                console.error('Error detecting theme preference:', e);
                 document.body.classList.remove('dark-mode');
                 themeToggleBtn.textContent = '🌙';
             }
@@ -96,11 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function getDayStartTime() {
         // Get current time in local timezone
         const now = new Date();
-        // Set to start of day (midnight) in local timezone
-        // Using ISO string and parsing to ensure Safari compatibility
-        const localDateStr = now.toLocaleDateString();
-        const localMidnight = new Date(localDateStr);
-        return localMidnight.getTime();
+        // Create a new date set to midnight today in local timezone
+        // This is more reliable across browsers
+        return new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            0, 0, 0, 0
+        ).getTime();
     }
 
     function checkDayReset() {
@@ -125,7 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.darkMode === null) {
             // If currently following OS preference, switch to explicit light/dark
             // Switch to the opposite of OS preference
-            state.darkMode = !prefersDarkScheme.matches;
+            try {
+                state.darkMode = !(prefersDarkScheme && prefersDarkScheme.matches);
+            } catch (e) {
+                // Fallback if matchMedia fails
+                console.error('Error detecting theme preference for toggle:', e);
+                state.darkMode = false; // Default to light mode if detection fails
+            }
         } else {
             // Toggle between light and dark
             state.darkMode = !state.darkMode;
