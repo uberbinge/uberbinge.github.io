@@ -251,8 +251,8 @@ body {
 
 .progress-ring {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 220px;
+    height: 220px;
     margin: 0 auto;
 }
 
@@ -293,11 +293,12 @@ body {
 }
 
 #calorie-value {
-    font-size: 48px;
+    font-size: 40px;
     font-weight: bold;
     line-height: 1.1;
     margin-bottom: 5px;
     color: var(--primary-color);
+    white-space: nowrap;
 }
 
 .unit {
@@ -309,7 +310,7 @@ body {
 /* Improve calorie display for different browsers */
 @media (max-width: 480px) {
     #calorie-value {
-        font-size: 42px;
+        font-size: 36px;
         line-height: 1;
     }
     
@@ -323,10 +324,11 @@ body {
 @-moz-document url-prefix() {
     .calorie-count {
         padding: 0;
+        width: 90%;
     }
     
     #calorie-value {
-        font-size: 42px;
+        font-size: 36px;
         line-height: 1;
         margin-bottom: 2px;
     }
@@ -337,7 +339,7 @@ body {
     
     @media (max-width: 480px) {
         #calorie-value {
-            font-size: 38px;
+            font-size: 32px;
         }
         
         .unit {
@@ -743,7 +745,7 @@ body.month-view-active #month-view {
     }
     
     .progress-ring {
-        transform: scale(0.85);
+        transform: scale(0.9);
         margin: 10px auto;
     }
     
@@ -764,19 +766,24 @@ body.month-view-active #month-view {
         }
         
         .progress-ring {
-            transform: scale(0.8);
+            transform: scale(0.85);
         }
     }
 }
 
 @media (max-width: 480px) {
     .progress-ring {
-        width: 160px;
-        height: 160px;
+        width: 200px;
+        height: 200px;
     }
     
     .calorie-display {
-        min-height: 180px;
+        min-height: 220px;
         margin: 10px 0 20px;
+    }
+
+    .ring {
+        width: 100%;
+        height: 100%;
     }
 }

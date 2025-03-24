@@ -256,7 +256,7 @@ const weekCalendar = document.getElementById('week-calendar');
 const monthCalendar = document.getElementById('month-calendar');
 
 // Constants
-const CIRCLE_RADIUS = 80;
+const CIRCLE_RADIUS = 90;
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 const CALORIES_PER_POUND = 3500; // 3500 kcal ≈ 1lb of fat
 const DAY_IN_MS = 24 * 60 * 60 * 1000; // Milliseconds in a day
@@ -596,17 +596,12 @@ function updateCalorieDisplay() {
 }
 
 function updateProgressRing() {
-    // Calculate the progress percentage (0-100%)
-    // For the ring, we'll use a range of 0 to CALORIES_PER_POUND
-    const netCalories = getNetCalories();
-    const absCalories = Math.abs(netCalories);
-    const percentage = Math.min(absCalories % CALORIES_PER_POUND / CALORIES_PER_POUND, 1);
-    
-    // Calculate the stroke-dashoffset
-    const offset = CIRCLE_CIRCUMFERENCE - (percentage * CIRCLE_CIRCUMFERENCE);
-    ringProgress.style.strokeDashoffset = offset;
+    // Keep the circle always full
+    ringProgress.style.strokeDashoffset = 0;
+    ringProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
     
     // Set the color based on deficit or surplus
+    const netCalories = getNetCalories();
     if (netCalories < 0) {
         ringProgress.style.stroke = 'var(--primary-color)'; // Green for deficit
     } else {
