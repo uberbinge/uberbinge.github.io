@@ -454,20 +454,33 @@ function switchView(viewType) {
     // Remove all view-related body classes
     document.body.classList.remove('day-view-active', 'week-view-active', 'month-view-active');
     
+    // Toggle visibility of calorie display and calendar containers
+    const calorieDisplay = document.querySelector('.calorie-display');
+    const calendarContainers = document.querySelectorAll('.calendar-container');
+    
+    calendarContainers.forEach(container => {
+        container.classList.remove('active');
+    });
+    
     // Show selected view and activate button
     if (viewType === 'day') {
         dayView.classList.add('active');
         dayViewBtn.classList.add('active');
         document.body.classList.add('day-view-active');
+        calorieDisplay.style.display = 'flex';
     } else if (viewType === 'week') {
         weekView.classList.add('active');
         weekViewBtn.classList.add('active');
         document.body.classList.add('week-view-active');
+        calorieDisplay.style.display = 'none';
+        document.querySelector('#week-view .calendar-container').classList.add('active');
         updateWeekCalendar();
     } else if (viewType === 'month') {
         monthView.classList.add('active');
         monthViewBtn.classList.add('active');
         document.body.classList.add('month-view-active');
+        calorieDisplay.style.display = 'none';
+        document.querySelector('#month-view .calendar-container').classList.add('active');
         updateMonthCalendar();
     }
 }
@@ -656,7 +669,6 @@ function updateWeekCalendar() {
         date.setDate(weekStart.getDate() + i);
         const dateKey = formatDateKey(date);
         
-        // Create the day element
         const dayElement = createCalendarDay(date, dateKey);
         weekCalendar.appendChild(dayElement);
     }
@@ -699,7 +711,6 @@ function updateMonthCalendar() {
         const date = new Date(currentYear, currentMonth, i);
         const dateKey = formatDateKey(date);
         
-        // Create the day element
         const dayElement = createCalendarDay(date, dateKey);
         monthCalendar.appendChild(dayElement);
     }
