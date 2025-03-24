@@ -266,21 +266,39 @@ body {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 .dot {
     width: 12px;
     height: 12px;
-    background-color: var(--primary-color);
     border-radius: 50%;
-    opacity: 0.3;
+    background-color: var(--ring-bg);
+    transition: all 0.3s ease;
 }
 
 .dot.active {
-    opacity: 1;
+    background-color: var(--primary-color);
+    transform: scale(1.2);
 }
 
-.dot.surplus {
+.dot.active.surplus {
     background-color: var(--add-btn-color);
+}
+
+.github-link {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.github-icon {
+    fill: var(--text-color);
+    transition: transform 0.3s ease, fill 0.3s ease;
+}
+
+.github-icon:hover {
+    transform: scale(1.1);
+    fill: var(--primary-color);
 }
