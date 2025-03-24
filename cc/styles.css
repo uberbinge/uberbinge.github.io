@@ -6,38 +6,25 @@
 }
 
 :root {
-    --primary-color: #4CAF50;
     --background-color: #ffffff;
     --text-color: #333333;
-    --secondary-bg: #f5f5f5;
-    --add-btn-bg: #ffdddd;
-    --add-btn-color: #ff5555;
+    --primary-color: #4caf50;
+    --secondary-bg: #f0f0f0;
+    --add-btn-bg: #ffebee;
+    --add-btn-color: #f44336;
     --subtract-btn-bg: #ddffdd;
     --subtract-btn-color: var(--primary-color);
     --ring-bg: #eeeeee;
     --slider-thumb-color: var(--primary-color);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background-color: #121212;
-        --text-color: #e0e0e0;
-        --secondary-bg: #1e1e1e;
-        --add-btn-bg: #3a0a0a;
-        --add-btn-color: #f44336;
-        --subtract-btn-bg: #0a2e0a;
-        --subtract-btn-color: var(--primary-color);
-        --ring-bg: #333333;
-    }
-}
-
 .dark-mode {
     --background-color: #121212;
-    --text-color: #ffffff;
+    --text-color: #e0e0e0;
     --secondary-bg: #1e1e1e;
-    --add-btn-bg: #3a2a2a;
-    --add-btn-color: #ff5555;
-    --subtract-btn-bg: #2a3a2a;
+    --add-btn-bg: #3a0a0a;
+    --add-btn-color: #f44336;
+    --subtract-btn-bg: #0a2e0a;
     --subtract-btn-color: var(--primary-color);
     --ring-bg: #333333;
 }

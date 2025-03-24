@@ -16,22 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
     const CALORIES_PER_POUND = 3500; // 3500 kcal ≈ 1lb of fat
 
-    // Check for OS dark mode preference - use a more reliable method for mobile
-    const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Force a repaint to ensure theme is applied correctly on iOS
-    document.body.style.display = 'none';
-    setTimeout(() => {
-        document.body.style.display = '';
-    }, 0);
-
     // State variables
     let state = loadState() || {
         dayStart: getDayStartTime(),
         bmr: 2000,
         manualCalories: 0, // This tracks manually added/subtracted calories
         totalCalorieHistory: 0, // This tracks the total calorie history across days
-        darkMode: null // null means follow OS preference
+        darkMode: false // Start with light mode by default
     };
 
     // Initialize the UI
@@ -43,13 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bmrSlider.addEventListener('input', updateBMR);
     addBtn.addEventListener('click', () => adjustCalories(100));
     subtractBtn.addEventListener('click', () => adjustCalories(-100));
-    
-    // Listen for OS theme changes
-    prefersDarkScheme.addEventListener('change', (e) => {
-        if (state.darkMode === null) {
-            applyTheme();
-        }
-    });
 
     // Start the timer
     startTimer();
@@ -65,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if we need to reset for a new day
         checkDayReset();
         
-        // Apply theme based on state or OS preference
+        // Apply theme based on state
         applyTheme();
 
         // Set BMR slider and values
@@ -81,28 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function applyTheme() {
-        if (state.darkMode === true) {
+        if (state.darkMode) {
             document.body.classList.add('dark-mode');
             themeToggleBtn.textContent = '☀️';
-        } else if (state.darkMode === false) {
+        } else {
             document.body.classList.remove('dark-mode');
             themeToggleBtn.textContent = '🌙';
-        } else {
-            // Follow OS preference
-            try {
-                if (prefersDarkScheme && prefersDarkScheme.matches) {
-                    document.body.classList.add('dark-mode');
-                    themeToggleBtn.textContent = '☀️';
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    themeToggleBtn.textContent = '🌙';
-                }
-            } catch (e) {
-                // Fallback if matchMedia fails
-                console.error('Error detecting theme preference:', e);
-                document.body.classList.remove('dark-mode');
-                themeToggleBtn.textContent = '🌙';
-            }
         }
     }
 
@@ -138,21 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTheme() {
-        if (state.darkMode === null) {
-            // If currently following OS preference, switch to explicit light/dark
-            // Switch to the opposite of OS preference
-            try {
-                state.darkMode = !(prefersDarkScheme && prefersDarkScheme.matches);
-            } catch (e) {
-                // Fallback if matchMedia fails
-                console.error('Error detecting theme preference for toggle:', e);
-                state.darkMode = false; // Default to light mode if detection fails
-            }
-        } else {
-            // Toggle between light and dark
-            state.darkMode = !state.darkMode;
-        }
-        
+        // Simple toggle between light and dark
+        state.darkMode = !state.darkMode;
         applyTheme();
         saveState();
     }
