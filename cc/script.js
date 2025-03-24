@@ -16,13 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
     const CALORIES_PER_POUND = 3500; // 3500 kcal ≈ 1lb of fat
 
+    // Theme detection - safely check if the browser supports it
+    const prefersDarkScheme = window.matchMedia ? 
+        window.matchMedia('(prefers-color-scheme: dark)') : null;
+
     // State variables
     let state = loadState() || {
         dayStart: getDayStartTime(),
         bmr: 2000,
         manualCalories: 0, // This tracks manually added/subtracted calories
         totalCalorieHistory: 0, // This tracks the total calorie history across days
-        darkMode: false // Start with light mode by default
+        themeMode: 'auto' // 'auto', 'light', or 'dark'
     };
 
     // Initialize the UI
@@ -34,6 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
     bmrSlider.addEventListener('input', updateBMR);
     addBtn.addEventListener('click', () => adjustCalories(100));
     subtractBtn.addEventListener('click', () => adjustCalories(-100));
+    
+    // Listen for OS theme changes if supported
+    if (prefersDarkScheme) {
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (state.themeMode === 'auto') {
+                applyTheme();
+            }
+        });
+    }
 
     // Start the timer
     startTimer();
@@ -65,12 +78,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function applyTheme() {
-        if (state.darkMode) {
+        // First, remove all theme classes
+        document.body.classList.remove('dark-mode', 'auto-theme');
+        
+        // Apply the appropriate theme
+        if (state.themeMode === 'dark') {
             document.body.classList.add('dark-mode');
-            themeToggleBtn.textContent = '☀️';
-        } else {
-            document.body.classList.remove('dark-mode');
-            themeToggleBtn.textContent = '🌙';
+            themeToggleBtn.textContent = '☀️'; // Sun icon for switching to light
+        } else if (state.themeMode === 'light') {
+            // Light mode is default, no class needed
+            themeToggleBtn.textContent = '🌙'; // Moon icon for switching to dark
+        } else if (state.themeMode === 'auto') {
+            // Auto mode - follow OS preference
+            document.body.classList.add('auto-theme');
+            
+            // Check if dark mode is preferred by OS
+            const isDarkModePreferred = prefersDarkScheme && prefersDarkScheme.matches;
+            
+            if (isDarkModePreferred) {
+                themeToggleBtn.textContent = '☀️'; // Sun icon
+            } else {
+                themeToggleBtn.textContent = '🌙'; // Moon icon
+            }
         }
     }
 
@@ -106,8 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTheme() {
-        // Simple toggle between light and dark
-        state.darkMode = !state.darkMode;
+        // Cycle through theme modes: auto -> light -> dark -> auto
+        if (state.themeMode === 'auto') {
+            state.themeMode = 'light';
+        } else if (state.themeMode === 'light') {
+            state.themeMode = 'dark';
+        } else {
+            state.themeMode = 'auto';
+        }
+        
         applyTheme();
         saveState();
     }
@@ -278,7 +314,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadState() {
         const savedState = localStorage.getItem('calorieCounterState');
         if (savedState) {
-            return JSON.parse(savedState);
+            try {
+                const parsed = JSON.parse(savedState);
+                
+                // Handle migration from old state format
+                if (parsed.darkMode !== undefined && parsed.themeMode === undefined) {
+                    if (parsed.darkMode === null) {
+                        parsed.themeMode = 'auto';
+                    } else if (parsed.darkMode === true) {
+                        parsed.themeMode = 'dark';
+                    } else {
+                        parsed.themeMode = 'light';
+                    }
+                    delete parsed.darkMode;
+                }
+                
+                return parsed;
+            } catch (e) {
+                console.error('Error parsing saved state:', e);
+                return null;
+            }
         }
         return null;
     }

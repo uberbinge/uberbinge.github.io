@@ -18,6 +18,20 @@
     --slider-thumb-color: var(--primary-color);
 }
 
+/* OS dark theme detection - only applies when app is in auto mode */
+@media (prefers-color-scheme: dark) {
+    body.auto-theme {
+        --background-color: #121212;
+        --text-color: #e0e0e0;
+        --secondary-bg: #1e1e1e;
+        --add-btn-bg: #3a0a0a;
+        --add-btn-color: #f44336;
+        --subtract-btn-bg: #0a2e0a;
+        --subtract-btn-color: var(--primary-color);
+        --ring-bg: #333333;
+    }
+}
+
 .dark-mode {
     --background-color: #121212;
     --text-color: #e0e0e0;
