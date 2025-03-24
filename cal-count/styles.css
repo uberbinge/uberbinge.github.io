@@ -15,6 +15,20 @@
     --subtract-btn-bg: #ddffdd;
     --subtract-btn-color: var(--primary-color);
     --ring-bg: #eeeeee;
+    --slider-thumb-color: var(--primary-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #121212;
+        --text-color: #e0e0e0;
+        --secondary-bg: #1e1e1e;
+        --add-btn-bg: #3a0a0a;
+        --add-btn-color: #f44336;
+        --subtract-btn-bg: #0a2e0a;
+        --subtract-btn-color: var(--primary-color);
+        --ring-bg: #333333;
+    }
 }
 
 .dark-mode {
@@ -134,11 +148,39 @@ body {
 
 #bmr-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--slider-thumb-color);
     border-radius: 50%;
-    background: var(--primary-color);
     cursor: pointer;
+}
+
+#bmr-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Safari specific styles */
+@supports (-webkit-touch-callout: none) {
+    .ring-container svg {
+        /* Fix for Safari SVG rendering */
+        transform: translateZ(0);
+    }
+    
+    .ring-progress {
+        /* Ensure smooth animations in Safari */
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        -webkit-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+        -webkit-transition: stroke-dashoffset 0.3s ease;
+        transition: stroke-dashoffset 0.3s ease;
+    }
 }
 
 .calorie-display {

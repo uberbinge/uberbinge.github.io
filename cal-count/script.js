@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bmr: 2000,
         manualCalories: 0, // This tracks manually added/subtracted calories
         totalCalorieHistory: 0, // This tracks the total calorie history across days
-        darkMode: false
+        darkMode: null // null means follow OS preference
     };
 
     // Initialize the UI
@@ -50,12 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
         checkDayReset();
         
         // Set theme
-        if (state.darkMode) {
+        if (state.darkMode === true) {
             document.body.classList.add('dark-mode');
             themeToggleBtn.textContent = '☀️';
-        } else {
+        } else if (state.darkMode === false) {
             document.body.classList.remove('dark-mode');
             themeToggleBtn.textContent = '🌙';
+        } else {
+            // Follow OS preference
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDarkScheme) {
+                document.body.classList.add('dark-mode');
+                themeToggleBtn.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeToggleBtn.textContent = '🌙';
+            }
         }
 
         // Set BMR slider and values
@@ -71,13 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getDayStartTime() {
-        // Get current time in CET
+        // Get current time in local timezone
         const now = new Date();
-        // Convert to CET (UTC+1 or UTC+2 during DST)
-        const cetTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-        // Set to start of day (midnight) in CET
-        cetTime.setHours(0, 0, 0, 0);
-        return cetTime.getTime();
+        // Set to start of day (midnight) in local timezone
+        // Using ISO string and parsing to ensure Safari compatibility
+        const localDateStr = now.toLocaleDateString();
+        const localMidnight = new Date(localDateStr);
+        return localMidnight.getTime();
     }
 
     function checkDayReset() {
@@ -99,7 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTheme() {
-        state.darkMode = !state.darkMode;
+        if (state.darkMode === null) {
+            // If currently following OS preference, switch to explicit light/dark
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // Switch to the opposite of OS preference
+            state.darkMode = !prefersDarkScheme;
+        } else {
+            // Toggle between light and dark
+            state.darkMode = !state.darkMode;
+        }
         
         if (state.darkMode) {
             document.body.classList.add('dark-mode');
@@ -136,10 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateCaloriesBurned() {
-        // Calculate elapsed seconds since start of day in CET
+        // Calculate elapsed seconds since start of day in local timezone
         const now = new Date();
-        const cetTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-        const elapsedSeconds = Math.floor((cetTime.getTime() - state.dayStart) / 1000);
+        const elapsedSeconds = Math.floor((now.getTime() - state.dayStart) / 1000);
         
         // BMR is calories per day, convert to calories per second
         const caloriesPerSecond = state.bmr / (24 * 60 * 60);
