@@ -36,8 +36,9 @@ function setupEventListeners() {
     // Theme toggle
     document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
     
-    // Reset button
-    document.getElementById('reset-btn').addEventListener('click', resetCounter);
+    // Reset button - only resets today's data
+    const resetBtn = document.getElementById('reset-btn');
+    resetBtn.addEventListener('click', resetCounter);
     
     // Calorie buttons
     document.getElementById('add-btn').addEventListener('click', () => adjustCalories(100));
@@ -544,7 +545,7 @@ function calculateNetCaloriesForDate(dateKey) {
     }
     
     // If we have stored data for this date, return it
-    if (state.dailyData[dateKey]) {
+    if (state.dailyData && state.dailyData[dateKey]) {
         return state.dailyData[dateKey].netCalories;
     }
     
@@ -801,18 +802,75 @@ function loadState() {
     try {
         const savedState = localStorage.getItem('calorieCounterState');
         if (savedState) {
-            return JSON.parse(savedState);
+            const parsedState = JSON.parse(savedState);
+            
+            // Validate the state structure
+            if (!parsedState.dayStart || !parsedState.bmr) {
+                console.warn('Invalid state structure detected, resetting state');
+                localStorage.removeItem('calorieCounterState');
+                return null;
+            }
+            
+            // Ensure dailyData exists
+            parsedState.dailyData = parsedState.dailyData || {};
+            
+            return parsedState;
         }
     } catch (e) {
         console.error('Error loading state:', e);
+        // Clear potentially corrupted state
+        try {
+            localStorage.removeItem('calorieCounterState');
+        } catch (clearError) {
+            console.error('Error clearing corrupted state:', clearError);
+        }
     }
     return null;
 }
 
 function saveState() {
     try {
+        // Validate state before saving
+        if (!state || !state.dayStart || !state.bmr) {
+            console.error('Invalid state detected, not saving');
+            return;
+        }
+        
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
     } catch (e) {
         console.error('Error saving state:', e);
+        // Try to clear storage if we hit quota or other issues
+        try {
+            localStorage.removeItem('calorieCounterState');
+        } catch (clearError) {
+            console.error('Error clearing state:', clearError);
+        }
+    }
+}
+
+// Add a function to clear all data
+function clearAllData() {
+    try {
+        localStorage.clear();
+        // Reset to initial state
+        state = {
+            dayStart: getDayStartTime(),
+            bmr: 1800,
+            manualCalories: 0,
+            totalCalorieHistory: 0,
+            themeMode: 'auto',
+            dailyData: {},
+            lastUpdated: Date.now()
+        };
+        // Force update all views
+        updateCalorieDisplay();
+        updateDotsDisplay();
+        updateCalendarViews();
+        // Update BMR slider
+        const bmrSlider = document.getElementById('bmr-slider');
+        bmrSlider.value = state.bmr;
+        updateBMRDisplay();
+    } catch (e) {
+        console.error('Error clearing data:', e);
     }
 }
