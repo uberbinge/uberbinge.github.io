@@ -823,3 +823,67 @@ body.month-view-active #month-view {
         transform: translateZ(0);
     }
 }
+
+/* Log button and modal styles */
+#log-btn {
+    color: #3498db;
+}
+
+.log-modal-content {
+    max-width: 90%;
+    max-height: 80vh;
+}
+
+.log-list-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding: 0 10px;
+}
+
+#log-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#log-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ring-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#log-list li:last-child {
+    border-bottom: none;
+}
+
+.log-entry-time {
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.log-entry-amount {
+    font-weight: bold;
+}
+
+.log-entry-amount.positive {
+    color: var(--add-btn-color);
+}
+
+.log-entry-amount.negative {
+    color: var(--primary-color);
+}
+
+.log-modal-content h3 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.empty-log-message {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-color);
+    opacity: 0.7;
+}

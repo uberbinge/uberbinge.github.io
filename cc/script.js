@@ -6,7 +6,8 @@ let state = loadState() || {
     totalCalorieHistory: 0, // This tracks the total calorie history across days
     themeMode: 'auto', // 'auto', 'light', or 'dark'
     dailyData: {}, // Store daily calorie data by date string
-    lastUpdated: Date.now() // Track when the state was last updated
+    lastUpdated: Date.now(), // Track when the state was last updated
+    calorieLog: [] // Array to store calorie adjustment logs for the current day
 };
 
 // Initialize the app when the DOM is loaded
@@ -43,6 +44,10 @@ function setupEventListeners() {
     // Calorie buttons
     document.getElementById('add-btn').addEventListener('click', () => adjustCalories(100));
     document.getElementById('subtract-btn').addEventListener('click', () => adjustCalories(-100));
+    
+    // Log button
+    document.getElementById('log-btn').addEventListener('click', displayLog);
+    document.getElementById('log-modal-close').addEventListener('click', closeLogModal);
     
     // BMR slider
     const bmrSlider = document.getElementById('bmr-slider');
@@ -407,7 +412,8 @@ function checkDayReset() {
             bmr: state.bmr,
             manualCalories: state.manualCalories,
             netCalories: previousDayNetCalories,
-            date: previousDayKey
+            date: previousDayKey,
+            calorieLog: state.calorieLog // Save the log for the previous day
         };
         
         // Add to total history
@@ -416,6 +422,7 @@ function checkDayReset() {
         // Reset for the new day
         state.dayStart = currentDayStart;
         state.manualCalories = 0;
+        state.calorieLog = []; // Reset log for the new day
         state.lastUpdated = Date.now();
         saveState();
         
@@ -575,6 +582,13 @@ function updateBMRDisplay() {
 function adjustCalories(amount) {
     // Add or subtract calories
     state.manualCalories += amount;
+    
+    // Log the adjustment with timestamp
+    state.calorieLog.push({
+        amount: amount,
+        timestamp: Date.now()
+    });
+    
     updateCalorieDisplay();
     updateProgressRing();
     updateDotsDisplay();
@@ -788,6 +802,7 @@ function resetCounter() {
         () => {
             // Reset the counter but keep the settings
             state.manualCalories = 0;
+            state.calorieLog = []; // Clear the log for the current day
             state.dayStart = getDayStartTime();
             state.lastUpdated = Date.now();
             saveState();
@@ -860,7 +875,8 @@ function clearAllData() {
             totalCalorieHistory: 0,
             themeMode: 'auto',
             dailyData: {},
-            lastUpdated: Date.now()
+            lastUpdated: Date.now(),
+            calorieLog: []
         };
         // Force update all views
         updateCalorieDisplay();
@@ -873,4 +889,52 @@ function clearAllData() {
     } catch (e) {
         console.error('Error clearing data:', e);
     }
+}
+
+// Function to display the calorie log
+function displayLog() {
+    const logModal = document.getElementById('log-modal');
+    const logList = document.getElementById('log-list');
+    
+    // Clear existing log entries
+    logList.innerHTML = '';
+    
+    // Check if there are log entries
+    if (state.calorieLog.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.className = 'empty-log-message';
+        emptyMessage.textContent = 'No calorie adjustments have been made today.';
+        logList.appendChild(emptyMessage);
+    } else {
+        // Add log entries in reverse chronological order (newest first)
+        for (let i = state.calorieLog.length - 1; i >= 0; i--) {
+            const entry = state.calorieLog[i];
+            const listItem = document.createElement('li');
+            
+            // Create time element
+            const timeElement = document.createElement('span');
+            timeElement.className = 'log-entry-time';
+            const entryTime = new Date(entry.timestamp);
+            timeElement.textContent = entryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Create amount element
+            const amountElement = document.createElement('span');
+            amountElement.className = entry.amount > 0 ? 'log-entry-amount positive' : 'log-entry-amount negative';
+            amountElement.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} kcal`;
+            
+            // Add elements to list item
+            listItem.appendChild(timeElement);
+            listItem.appendChild(amountElement);
+            logList.appendChild(listItem);
+        }
+    }
+    
+    // Show the log modal
+    logModal.classList.add('active');
+}
+
+// Close the log modal
+function closeLogModal() {
+    const logModal = document.getElementById('log-modal');
+    logModal.classList.remove('active');
 }
