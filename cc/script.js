@@ -643,16 +643,33 @@ function updateDotsDisplay() {
     // Get the total calories (history + current day)
     const totalCalories = getTotalCalories();
     
-    // Calculate how many complete pounds (3500 kcal each)
-    const completePounds = Math.floor(Math.abs(totalCalories) / CALORIES_PER_POUND);
+    // Calculate pounds and progress
+    const totalPounds = Math.floor(Math.abs(totalCalories) / CALORIES_PER_POUND);
+    const remainingCalories = Math.abs(totalCalories) % CALORIES_PER_POUND;
+    const progressToNextPound = Math.round((remainingCalories / CALORIES_PER_POUND) * 100);
     
-    // Update the dots based on pounds lost/gained
+    // Update pounds display
+    const poundsCount = document.getElementById('pounds-count');
+    poundsCount.textContent = totalPounds;
+    if (totalCalories > 0) {
+        poundsCount.style.color = 'var(--add-btn-color)'; // Red for weight gain
+    } else {
+        poundsCount.style.color = 'var(--primary-color)'; // Green for weight loss
+    }
+    
+    // Update progress percentage
+    document.getElementById('progress-to-pound').textContent = progressToNextPound;
+    
+    // Update dots to show progress to next pound
+    const dots = document.querySelectorAll('.dot');
+    const dotsToFill = Math.ceil((progressToNextPound / 100) * dots.length);
+    
     dots.forEach((dot, index) => {
         // First, remove any existing classes
         dot.classList.remove('active', 'surplus');
         
-        // If we have enough complete pounds, activate this dot
-        if (index < completePounds) {
+        // Fill dots based on progress to next pound
+        if (index < dotsToFill) {
             dot.classList.add('active');
             
             // If it's a surplus (weight gain), make it red
@@ -661,6 +678,14 @@ function updateDotsDisplay() {
             }
         }
     });
+    
+    // Add animation class if all dots are filled
+    const weightProgress = document.querySelector('.weight-progress');
+    if (progressToNextPound >= 95) {
+        weightProgress.classList.add('almost-complete');
+    } else {
+        weightProgress.classList.remove('almost-complete');
+    }
 }
 
 function updateCalendarViews() {

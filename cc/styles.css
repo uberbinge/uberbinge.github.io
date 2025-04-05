@@ -887,3 +887,99 @@ body.month-view-active #month-view {
     color: var(--text-color);
     opacity: 0.7;
 }
+
+.weight-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: var(--secondary-bg);
+    border-radius: 15px;
+}
+
+.pounds-indicator {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+#pounds-count {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.pounds-label {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--ring-bg);
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background-color: var(--primary-color);
+    transform: scale(1.2);
+}
+
+.dot.active.surplus {
+    background-color: var(--add-btn-color);
+}
+
+.progress-label {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+#progress-to-pound {
+    font-weight: bold;
+    opacity: 1;
+}
+
+.weight-progress.almost-complete .dots {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Smooth transition for pound count changes */
+#pounds-count {
+    transition: color 0.3s ease;
+}
+
+/* Make dots more prominent when active */
+.dot.active {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Add hover effect to show exact percentage */
+.weight-progress:hover .progress-label {
+    opacity: 1;
+}
