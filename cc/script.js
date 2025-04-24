@@ -244,7 +244,6 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const resetBtn = document.getElementById('reset-btn');
 const githubBtn = document.getElementById('github-link');
 const bmrSlider = document.getElementById('bmr-slider');
-const bmrValues = document.querySelectorAll('.bmr-value');
 const calorieValueEl = document.getElementById('calorie-value');
 const addBtn = document.getElementById('add-btn');
 const subtractBtn = document.getElementById('subtract-btn');
@@ -567,9 +566,15 @@ function updateBMR() {
 }
 
 function updateBMRDisplay() {
-    // Update the BMR values display
+    // Dynamically update the BMR values in the UI
     const values = [state.bmr - 100, state.bmr, state.bmr + 100];
-    bmrValues.forEach((el, index) => {
+    // For new dynamic IDs
+    const bmrValueEls = [
+        document.getElementById('bmr-value-1'),
+        document.getElementById('bmr-value-2'),
+        document.getElementById('bmr-value-3')
+    ];
+    bmrValueEls.forEach((el, index) => {
         el.textContent = values[index].toLocaleString();
         if (index === 1) {
             el.classList.add('current');
