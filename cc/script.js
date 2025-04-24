@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update calendar views
     updateCalendarViews();
+    
+    // Ensure BMR values are displayed on load
+    updateBMRDisplay();
 });
 
 // Set up event listeners
