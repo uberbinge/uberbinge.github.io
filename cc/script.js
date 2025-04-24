@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Ensure BMR values are displayed on load
     updateBMRDisplay();
+    // Ensure BMR slider reflects the state.bmr value on load
+    bmrSlider.value = state.bmr;
 });
 
 // Set up event listeners
