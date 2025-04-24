@@ -10,6 +10,12 @@ let state = loadState() || {
     calorieLog: [] // Array to store calorie adjustment logs for the current day
 };
 
+// Initialize week view navigation state
+let currentWeekOffset = 0; // 0 = current week, -1 = previous week, etc.
+
+// Initialize month view navigation state
+let currentMonthOffset = 0; // 0 = current month, -1 = previous month, etc.
+
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Process any missed days
@@ -35,6 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
     updateBMRDisplay();
     // Ensure BMR slider reflects the state.bmr value on load
     bmrSlider.value = state.bmr;
+    
+    // Add week nav button listeners
+    document.getElementById('week-prev-btn').addEventListener('click', () => handleWeekNav(-1));
+    document.getElementById('week-next-btn').addEventListener('click', () => handleWeekNav(1));
+    addSwipeListenersWeekView();
+    
+    // Add month nav button listeners
+    document.getElementById('month-prev-btn').addEventListener('click', () => handleMonthNav(-1));
+    document.getElementById('month-next-btn').addEventListener('click', () => handleMonthNav(1));
+    addSwipeListenersMonthView();
 });
 
 // Set up event listeners
@@ -702,14 +718,36 @@ function updateDotsDisplay() {
 }
 
 function updateCalendarViews() {
-    updateWeekCalendar();
-    updateMonthCalendar();
+    updateWeekCalendar(currentWeekOffset);
+    updateMonthCalendar(currentMonthOffset);
 }
 
-function updateWeekCalendar() {
+function getStartOfWeek(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - d.getDay()); // Sunday
+    return d;
+}
+
+function isCurrentWeek(offset) {
+    return offset === 0;
+}
+
+function getCWNumber(date) {
+    // ISO week number (CW): https://en.wikipedia.org/wiki/ISO_week_date
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    // Thursday in current week decides the year.
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    // First week of year has Jan 1st in it
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    return weekNo;
+}
+
+function updateWeekCalendar(offset = currentWeekOffset) {
     // Clear the calendar
     weekCalendar.innerHTML = '';
-    
+
     // Add day headers
     DAYS_OF_WEEK.forEach(day => {
         const dayHeader = document.createElement('div');
@@ -717,68 +755,72 @@ function updateWeekCalendar() {
         dayHeader.textContent = day;
         weekCalendar.appendChild(dayHeader);
     });
-    
-    // Get the current date
+
+    // Get the start of the target week
     const today = new Date();
-    const currentDay = today.getDay(); // 0 = Sunday, 6 = Saturday
-    
-    // Calculate the start of the week (Sunday)
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - currentDay);
-    
+    const weekStart = getStartOfWeek(today);
+    weekStart.setDate(weekStart.getDate() + offset * 7);
+
+    // Label: CW-n
+    const cw = getCWNumber(weekStart);
+    const weekLabel = document.getElementById('week-label');
+    weekLabel.textContent = `CW-${cw}`;
+
     // Create calendar days for the week
     for (let i = 0; i < 7; i++) {
         const date = new Date(weekStart);
         date.setDate(weekStart.getDate() + i);
         const dateKey = formatDateKey(date);
-        
         const dayElement = createCalendarDay(date, dateKey);
         weekCalendar.appendChild(dayElement);
     }
+
+    // Update nav button states
+    const nextBtn = document.getElementById('week-next-btn');
+    nextBtn.disabled = isCurrentWeek(offset);
 }
 
-function updateMonthCalendar() {
-    // Clear the calendar
+function getStartOfMonth(date) {
+    const d = new Date(date);
+    d.setDate(1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
+function isCurrentMonth(offset) {
+    return offset === 0;
+}
+
+function updateMonthCalendar(offset = currentMonthOffset) {
     monthCalendar.innerHTML = '';
-    
-    // Add day headers
     DAYS_OF_WEEK.forEach(day => {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-header';
         dayHeader.textContent = day;
         monthCalendar.appendChild(dayHeader);
     });
-    
-    // Get the current date
     const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    
-    // Create a date for the first day of the month
+    const monthStart = getStartOfMonth(today);
+    monthStart.setMonth(monthStart.getMonth() + offset);
+    const currentMonth = monthStart.getMonth();
+    const currentYear = monthStart.getFullYear();
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const startingDay = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
-    
-    // Get the number of days in the month
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    
-    // Add empty cells for days before the first day of the month
+    const startingDay = firstDay.getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    // Empty cells before first day
     for (let i = 0; i < startingDay; i++) {
         const emptyDay = document.createElement('div');
         emptyDay.className = 'calendar-day empty';
         monthCalendar.appendChild(emptyDay);
     }
-    
-    // Add days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(currentYear, currentMonth, i);
+    // Days of month
+    for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(currentYear, currentMonth, d);
         const dateKey = formatDateKey(date);
-        
         const dayElement = createCalendarDay(date, dateKey);
         monthCalendar.appendChild(dayElement);
     }
-    
-    // Add empty cells to complete the grid if needed
+    // Fill to complete grid
     const totalCells = startingDay + daysInMonth;
     const remainingCells = 7 - (totalCells % 7);
     if (remainingCells < 7) {
@@ -788,6 +830,13 @@ function updateMonthCalendar() {
             monthCalendar.appendChild(emptyDay);
         }
     }
+    // Label: Month Name Year
+    const monthLabel = document.getElementById('month-label');
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    monthLabel.textContent = `${monthNames[monthStart.getMonth()]} ${monthStart.getFullYear()}`;
+    // Update nav button states
+    const nextBtn = document.getElementById('month-next-btn');
+    nextBtn.disabled = isCurrentMonth(offset);
 }
 
 function createCalendarDay(date, dateKey) {
@@ -975,4 +1024,73 @@ function displayLog() {
 function closeLogModal() {
     const logModal = document.getElementById('log-modal');
     logModal.classList.remove('active');
+}
+
+function addSwipeListenersWeekView() {
+    const weekView = document.getElementById('week-view');
+    let touchStartX = null;
+    weekView.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+        }
+    });
+    weekView.addEventListener('touchend', e => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const dx = touchEndX - touchStartX;
+        if (Math.abs(dx) > 40) {
+            if (dx < 0) {
+                // Swipe left: previous week
+                handleWeekNav(-1);
+            } else {
+                // Swipe right: next week
+                handleWeekNav(1);
+            }
+        }
+        touchStartX = null;
+    });
+}
+
+function handleWeekNav(direction) {
+    // direction: -1 (prev), 1 (next)
+    if (direction === -1) {
+        currentWeekOffset--;
+        updateWeekCalendar();
+    } else if (direction === 1 && currentWeekOffset < 0) {
+        currentWeekOffset++;
+        updateWeekCalendar();
+    }
+}
+
+function addSwipeListenersMonthView() {
+    const monthView = document.getElementById('month-view');
+    let touchStartX = null;
+    monthView.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+        }
+    });
+    monthView.addEventListener('touchend', e => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const dx = touchEndX - touchStartX;
+        if (Math.abs(dx) > 40) {
+            if (dx < 0) {
+                handleMonthNav(-1);
+            } else {
+                handleMonthNav(1);
+            }
+        }
+        touchStartX = null;
+    });
+}
+
+function handleMonthNav(direction) {
+    if (direction === -1) {
+        currentMonthOffset--;
+        updateMonthCalendar();
+    } else if (direction === 1 && currentMonthOffset < 0) {
+        currentMonthOffset++;
+        updateMonthCalendar();
+    }
 }
