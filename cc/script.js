@@ -365,11 +365,12 @@ function processMissedDays() {
     // Process each missed day
     let processDate = new Date(lastUpdated);
     
-    // First, save the last active day's data
+    // First, save the last active day's data (cap calories burned to 24h max)
     const lastActiveDayKey = formatDateKey(processDate);
-    const lastDayNetCalories = calculateNetCaloriesForDate(lastActiveDayKey);
-    
-    // Save the last active day's data
+    // Calculate the time spent in the last active day (cap at 24h)
+    let lastDayElapsed = Math.min(DAY_IN_MS, currentDayStart - state.dayStart);
+    let lastDayCaloriesBurned = Math.round((state.bmr / DAY_IN_MS) * lastDayElapsed * 10) / 10;
+    let lastDayNetCalories = state.manualCalories - lastDayCaloriesBurned;
     state.dailyData[lastActiveDayKey] = {
         bmr: state.bmr,
         manualCalories: state.manualCalories,
@@ -540,7 +541,9 @@ function padZero(num) {
 function calculateCaloriesBurned() {
     // Calculate elapsed seconds since start of day in local timezone
     const now = new Date();
-    const elapsedSeconds = Math.floor((now.getTime() - state.dayStart) / 1000);
+    // Cap elapsed time at 24 hours (in ms)
+    let elapsedMs = Math.min(now.getTime() - state.dayStart, DAY_IN_MS);
+    const elapsedSeconds = Math.floor(elapsedMs / 1000);
     
     // BMR is calories per day, convert to calories per second
     const caloriesPerSecond = state.bmr / (24 * 60 * 60);
