@@ -64,7 +64,7 @@ body {
         height: 100%;
         min-height: 100vh;
     }
-    
+
     html {
         height: -moz-available;
         min-height: 100vh;
@@ -223,7 +223,7 @@ body {
         /* Fix for Safari SVG rendering */
         transform: translateZ(0);
     }
-    
+
     .ring-progress {
         /* Ensure smooth animations in Safari */
         -webkit-transform: rotate(-90deg);
@@ -232,6 +232,34 @@ body {
         transform-origin: 50% 50%;
         -webkit-transition: stroke-dashoffset 0.3s ease;
         transition: stroke-dashoffset 0.3s ease;
+    }
+
+    /* iOS Safari modal fixes */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-content {
+        position: relative;
+        margin: auto;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        max-height: 80%;
+    }
+
+    .log-modal-content, 
+    .log-list-container {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
@@ -309,7 +337,7 @@ body {
         font-size: 36px;
         line-height: 1;
     }
-    
+
     .unit {
         font-size: 14px;
         margin-top: 2px;
@@ -322,22 +350,22 @@ body {
         padding: 0;
         width: 90%;
     }
-    
+
     #calorie-value {
         font-size: 36px;
         line-height: 1;
         margin-bottom: 2px;
     }
-    
+
     .unit {
         font-size: 14px;
     }
-    
+
     @media (max-width: 480px) {
         #calorie-value {
             font-size: 32px;
         }
-        
+
         .unit {
             font-size: 12px;
         }
@@ -462,10 +490,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    height: -webkit-fill-available;
+    height: -moz-available;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 100;
     justify-content: center;
     align-items: center;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
 }
 
 .modal.active {
@@ -478,8 +510,13 @@ body {
     padding: 20px;
     border-radius: 10px;
     max-width: 80%;
+    width: 100%;
+    max-height: 85%;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    margin: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-buttons {
@@ -686,7 +723,7 @@ body.month-view-active #month-view {
     .container {
         padding: 15px;
     }
-    
+
     .calendar-container.active {
         margin-top: 10px;
     }
@@ -698,28 +735,28 @@ body.month-view-active #month-view {
         padding: 20px 0;
         min-height: 240px;
     }
-    
+
     .progress-ring {
         transform: scale(0.9);
         margin: 10px auto;
     }
-    
+
     .progress-ring svg {
         width: 100%;
         height: 100%;
         overflow: visible;
     }
-    
+
     .ring-progress {
         transform: rotate(-90deg) translateZ(0);
     }
-    
+
     /* Additional Firefox mobile fixes */
     @media (max-width: 480px) {
         .calorie-display {
             padding: 25px 0;
         }
-        
+
         .progress-ring {
             transform: scale(0.85);
         }
@@ -731,7 +768,7 @@ body.month-view-active #month-view {
         width: 200px;
         height: 200px;
     }
-    
+
     .calorie-display {
         min-height: 220px;
         margin: 10px 0 20px;
@@ -787,11 +824,13 @@ body.month-view-active #month-view {
 .log-modal-content {
     max-width: 90%;
     max-height: 80vh;
+    position: relative;
 }
 
 .log-list-container {
     max-height: 60vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     margin: 15px 0;
     padding: 0 10px;
 }
@@ -1002,6 +1041,7 @@ body.month-view-active #month-view {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .edit-calories-input-container label {
@@ -1021,6 +1061,8 @@ body.month-view-active #month-view {
     color: var(--text-color);
     font-size: 16px;
     text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 #edit-calories-input:focus {
