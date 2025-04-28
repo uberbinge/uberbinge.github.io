@@ -1097,6 +1097,8 @@ function closeEditCaloriesModal() {
 
 // Save the edited calories
 function saveEditedCalories(dateKey, manualCalories) {
+    let oldNetCalories = 0;
+
     if (dateKey === formatDateKey(state.dayStart)) {
         // If it's today, update the current manual calories
         state.manualCalories = manualCalories;
@@ -1109,10 +1111,17 @@ function saveEditedCalories(dateKey, manualCalories) {
     } else if (state.dailyData && state.dailyData[dateKey]) {
         // If it's a past day, update the stored manual calories
         const dayData = state.dailyData[dateKey];
+
+        // Store the old net calories to calculate the difference later
+        oldNetCalories = dayData.netCalories;
+
         dayData.manualCalories = manualCalories;
 
         // Recalculate net calories (full day of BMR burn)
         dayData.netCalories = manualCalories - dayData.bmr;
+
+        // Update totalCalorieHistory to reflect the change in this day's calories
+        state.totalCalorieHistory += (dayData.netCalories - oldNetCalories);
 
         // Clear the calorie log and add a single entry for the manual edit
         dayData.calorieLog = [{
@@ -1122,16 +1131,21 @@ function saveEditedCalories(dateKey, manualCalories) {
     } else {
         // If there's no data for this date yet, create it
         const bmr = state.bmr; // Use current BMR
+        const newNetCalories = manualCalories - bmr;
+
         state.dailyData[dateKey] = {
             bmr: bmr,
             manualCalories: manualCalories,
-            netCalories: manualCalories - bmr,
+            netCalories: newNetCalories,
             date: dateKey,
             calorieLog: [{
                 amount: manualCalories,
                 timestamp: Date.now()
             }]
         };
+
+        // Update totalCalorieHistory to include this new day's calories
+        state.totalCalorieHistory += newNetCalories;
     }
 
     // Save the updated state
