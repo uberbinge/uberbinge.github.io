@@ -20,33 +20,33 @@ let currentMonthOffset = 0; // 0 = current month, -1 = previous month, etc.
 document.addEventListener('DOMContentLoaded', () => {
     // Process any missed days
     processMissedDays();
-    
+
     // Check if it's a new day
     checkDayReset();
-    
+
     // Set up event listeners
     setupEventListeners();
-    
+
     // Start the timer
     startTimer();
-    
+
     // Update the display
     updateCalorieDisplay();
     updateDotsDisplay();
-    
+
     // Update calendar views
     updateCalendarViews();
-    
+
     // Ensure BMR values are displayed on load
     updateBMRDisplay();
     // Ensure BMR slider reflects the state.bmr value on load
     bmrSlider.value = state.bmr;
-    
+
     // Add week nav button listeners
     document.getElementById('week-prev-btn').addEventListener('click', () => handleWeekNav(-1));
     document.getElementById('week-next-btn').addEventListener('click', () => handleWeekNav(1));
     addSwipeListenersWeekView();
-    
+
     // Add month nav button listeners
     document.getElementById('month-prev-btn').addEventListener('click', () => handleMonthNav(-1));
     document.getElementById('month-next-btn').addEventListener('click', () => handleMonthNav(1));
@@ -57,40 +57,40 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() {
     // Theme toggle
     document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-    
+
     // Reset button - only resets today's data
     const resetBtn = document.getElementById('reset-btn');
     resetBtn.addEventListener('click', resetCounter);
-    
+
     // Calorie buttons
     document.getElementById('add-btn').addEventListener('click', () => adjustCalories(100));
     document.getElementById('subtract-btn').addEventListener('click', () => adjustCalories(-100));
-    
+
     // Log button
     document.getElementById('log-btn').addEventListener('click', displayLog);
     document.getElementById('log-modal-close').addEventListener('click', closeLogModal);
-    
+
     // BMR slider
     const bmrSlider = document.getElementById('bmr-slider');
     bmrSlider.addEventListener('input', updateBMRDisplay);
     bmrSlider.addEventListener('change', updateBMR);
-    
+
     // View toggle buttons
     document.getElementById('day-view-btn').addEventListener('click', () => switchView('day'));
     document.getElementById('week-view-btn').addEventListener('click', () => switchView('week'));
     document.getElementById('month-view-btn').addEventListener('click', () => switchView('month'));
-    
+
     // Export/Import buttons
     document.getElementById('export-btn').addEventListener('click', exportData);
     document.getElementById('import-btn').addEventListener('click', () => {
         document.getElementById('import-file').click();
     });
     document.getElementById('import-file').addEventListener('change', handleFileSelect);
-    
+
     // Modal buttons
     document.getElementById('modal-confirm').addEventListener('click', confirmModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
-    
+
     // GitHub button
     document.getElementById('github-link').addEventListener('click', () => {
         window.open('https://github.com/uberbinge/uberbinge.github.io/tree/main/cc', '_blank');
@@ -105,27 +105,27 @@ function exportData() {
         timestamp: Date.now(),
         state: state
     };
-    
+
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     // Create a temporary link to download the file
     const a = document.createElement('a');
     const date = new Date();
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     a.href = url;
     a.download = `calorie-counter-data-${dateStr}.json`;
-    
+
     // Trigger the download
     document.body.appendChild(a);
     a.click();
-    
+
     // Clean up
     setTimeout(() => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }, 100);
-    
+
     // Show success message
     showMessage('Data exported successfully!');
 }
@@ -134,24 +134,24 @@ function exportData() {
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
+
     // Check if it's a JSON file
     if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
         showMessage('Please select a valid JSON file.');
         event.target.value = '';
         return;
     }
-    
+
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
             const importedData = JSON.parse(e.target.result);
-            
+
             // Validate the imported data
             if (!importedData.state || !importedData.version) {
                 throw new Error('Invalid data format');
             }
-            
+
             // Show confirmation dialog
             showConfirmDialog(
                 'This will replace all your current data. Are you sure you want to continue?',
@@ -163,11 +163,11 @@ function handleFileSelect(event) {
         } catch (error) {
             showMessage(`Error importing data: ${error.message}`);
         }
-        
+
         // Reset the file input
         event.target.value = '';
     };
-    
+
     reader.readAsText(file);
 }
 
@@ -176,20 +176,20 @@ function importData(importedData) {
     try {
         // Update the state with imported data
         state = importedData.state;
-        
+
         // Save to localStorage
         saveState();
-        
+
         // Update the UI
         updateCalorieDisplay();
         updateDotsDisplay();
         updateCalendarViews();
-        
+
         // Update BMR slider
         const bmrSlider = document.getElementById('bmr-slider');
         bmrSlider.value = state.bmr;
         updateBMRDisplay();
-        
+
         // Show success message
         showMessage('Data imported successfully!');
     } catch (error) {
@@ -203,13 +203,13 @@ function showMessage(message) {
     const modalMessage = document.getElementById('modal-message');
     const modalConfirm = document.getElementById('modal-confirm');
     const modalCancel = document.getElementById('modal-cancel');
-    
+
     modalMessage.textContent = message;
     modalConfirm.textContent = 'OK';
     modalCancel.style.display = 'none';
-    
+
     modal.classList.add('active');
-    
+
     // Set up the confirm button to close the modal
     modalConfirm.onclick = closeModal;
 }
@@ -220,13 +220,13 @@ function showConfirmDialog(message, onConfirm) {
     const modalMessage = document.getElementById('modal-message');
     const modalConfirm = document.getElementById('modal-confirm');
     const modalCancel = document.getElementById('modal-cancel');
-    
+
     modalMessage.textContent = message;
     modalConfirm.textContent = 'Confirm';
     modalCancel.style.display = 'inline-block';
-    
+
     modal.classList.add('active');
-    
+
     // Store the confirm callback
     modal.dataset.confirmCallback = 'true';
     window.modalConfirmCallback = onConfirm;
@@ -235,14 +235,14 @@ function showConfirmDialog(message, onConfirm) {
 // Confirm modal action
 function confirmModal() {
     const modal = document.getElementById('modal');
-    
+
     // Check if there's a confirm callback
     if (modal.dataset.confirmCallback === 'true' && window.modalConfirmCallback) {
         window.modalConfirmCallback();
         delete window.modalConfirmCallback;
         modal.dataset.confirmCallback = 'false';
     }
-    
+
     closeModal();
 }
 
@@ -250,10 +250,10 @@ function confirmModal() {
 function closeModal() {
     const modal = document.getElementById('modal');
     const modalCancel = document.getElementById('modal-cancel');
-    
+
     modal.classList.remove('active');
     modalCancel.style.display = 'inline-block';
-    
+
     // Clean up any confirm callback
     delete window.modalConfirmCallback;
     modal.dataset.confirmCallback = 'false';
@@ -270,7 +270,7 @@ const addBtn = document.getElementById('add-btn');
 const subtractBtn = document.getElementById('subtract-btn');
 const ringProgress = document.querySelector('.ring-progress');
 const dots = document.querySelectorAll('.dot');
-    
+
 // View elements
 const dayViewBtn = document.getElementById('day-view-btn');
 const weekViewBtn = document.getElementById('week-view-btn');
@@ -296,10 +296,10 @@ const prefersDarkScheme = window.matchMedia ?
 function initializeUI() {
     // Process any missed days
     processMissedDays();
-    
+
     // Check if we need to reset for a new day
     checkDayReset();
-    
+
     // Apply theme based on state
     applyTheme();
 
@@ -313,7 +313,7 @@ function initializeUI() {
     // Set the ring's stroke properties
     ringProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
     updateProgressRing();
-    
+
     // Update calendar views
     updateCalendarViews();
 }
@@ -321,7 +321,7 @@ function initializeUI() {
 function applyTheme() {
     // First, remove all theme classes
     document.body.classList.remove('dark-mode', 'auto-theme');
-    
+
     // Apply the appropriate theme
     if (state.themeMode === 'dark') {
         document.body.classList.add('dark-mode');
@@ -332,10 +332,10 @@ function applyTheme() {
     } else if (state.themeMode === 'auto') {
         // Auto mode - follow OS preference
         document.body.classList.add('auto-theme');
-        
+
         // Check if dark mode is preferred by OS
         const isDarkModePreferred = prefersDarkScheme && prefersDarkScheme.matches;
-        
+
         if (isDarkModePreferred) {
             themeToggleBtn.textContent = '☀️'; // Sun icon
         } else {
@@ -367,22 +367,22 @@ function processMissedDays() {
     const now = Date.now();
     const lastUpdated = state.lastUpdated || now;
     const currentDayStart = getDayStartTime();
-    
+
     // If last update was today, no need to process missed days
     if (lastUpdated >= currentDayStart) {
         return;
     }
-    
+
     // Calculate how many days we've missed
     const daysSinceLastUpdate = Math.floor((currentDayStart - lastUpdated) / DAY_IN_MS);
-    
+
     if (daysSinceLastUpdate <= 0) {
         return;
     }
-    
+
     // Process each missed day
     let processDate = new Date(lastUpdated);
-    
+
     // First, save the last active day's data (cap calories burned to 24h max)
     const lastActiveDayKey = formatDateKey(processDate);
     // Calculate the time spent in the last active day (cap at 24h)
@@ -395,13 +395,13 @@ function processMissedDays() {
         netCalories: lastDayNetCalories,
         date: lastActiveDayKey
     };
-    
+
     // Now process each fully missed day
     for (let i = 1; i < daysSinceLastUpdate; i++) {
         // Move to the next day
         processDate = new Date(processDate.getTime() + DAY_IN_MS);
         const dateKey = formatDateKey(processDate);
-        
+
         // For missed days, we only count BMR (no manual calories)
         state.dailyData[dateKey] = {
             bmr: state.bmr,
@@ -410,12 +410,12 @@ function processMissedDays() {
             date: dateKey
         };
     }
-    
+
     // Reset the current day's data
     state.manualCalories = 0;
     state.dayStart = currentDayStart;
     state.lastUpdated = now;
-    
+
     // Save the updated state
     saveState();
 }
@@ -427,7 +427,7 @@ function checkDayReset() {
         // Calculate the previous day's net calories
         const previousDayNetCalories = getNetCalories();
         const previousDayKey = formatDateKey(state.dayStart);
-        
+
         // Save the previous day's data
         state.dailyData[previousDayKey] = {
             bmr: state.bmr,
@@ -436,20 +436,20 @@ function checkDayReset() {
             date: previousDayKey,
             calorieLog: state.calorieLog // Save the log for the previous day
         };
-        
+
         // Add to total history
         state.totalCalorieHistory += previousDayNetCalories;
-        
+
         // Reset for the new day
         state.dayStart = currentDayStart;
         state.manualCalories = 0;
         state.calorieLog = []; // Reset log for the new day
         state.lastUpdated = Date.now();
         saveState();
-        
+
         // Update the dots display
         updateDotsDisplay();
-        
+
         // Update calendar views
         updateCalendarViews();
     }
@@ -464,7 +464,7 @@ function toggleTheme() {
     } else {
         state.themeMode = 'auto';
     }
-    
+
     applyTheme();
     saveState();
 }
@@ -474,25 +474,25 @@ function switchView(viewType) {
     dayView.classList.remove('active');
     weekView.classList.remove('active');
     monthView.classList.remove('active');
-    
+
     // Remove active class from all buttons
     dayViewBtn.classList.remove('active');
     weekViewBtn.classList.remove('active');
     monthViewBtn.classList.remove('active');
-    
+
     // Remove all view-related body classes
     document.body.classList.remove('day-view-active', 'week-view-active', 'month-view-active');
-    
+
     // Toggle visibility of calorie display and calendar containers
     const calorieDisplay = document.querySelector('.calorie-display');
     const calendarContainers = document.querySelectorAll('.calendar-container');
-    
+
     calendarContainers.forEach(container => {
         container.classList.remove('active');
         // Force reflow
         void container.offsetHeight;
     });
-    
+
     // Show selected view and activate button
     if (viewType === 'day') {
         dayView.classList.add('active');
@@ -520,7 +520,7 @@ function switchView(viewType) {
         void monthContainer.offsetHeight;
         updateMonthCalendar();
     }
-    
+
     // Force a repaint in Safari
     if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
         document.body.style.webkitTransform = 'scale(1)';
@@ -533,19 +533,19 @@ function startTimer() {
     setInterval(() => {
         // Check if we need to reset for a new day
         checkDayReset();
-        
+
         // Calculate elapsed time since start of day
         const elapsedSeconds = Math.floor((Date.now() - state.dayStart) / 1000);
         const hours = Math.floor(elapsedSeconds / 3600);
         const minutes = Math.floor((elapsedSeconds % 3600) / 60);
         const seconds = elapsedSeconds % 60;
-        
+
         timeElapsedEl.textContent = `${padZero(hours)}h ${padZero(minutes)}m ${padZero(seconds)}s`;
-        
+
         // Update calorie display and progress ring
         updateCalorieDisplay();
         updateProgressRing();
-        
+
         // Update last updated time
         state.lastUpdated = Date.now();
         saveState();
@@ -562,7 +562,7 @@ function calculateCaloriesBurned() {
     // Cap elapsed time at 24 hours (in ms)
     let elapsedMs = Math.min(now.getTime() - state.dayStart, DAY_IN_MS);
     const elapsedSeconds = Math.floor(elapsedMs / 1000);
-    
+
     // BMR is calories per day, convert to calories per second
     const caloriesPerSecond = state.bmr / (24 * 60 * 60);
     return Math.round(caloriesPerSecond * elapsedSeconds * 10) / 10; // Round to 1 decimal place
@@ -573,12 +573,32 @@ function calculateNetCaloriesForDate(dateKey) {
     if (dateKey === formatDateKey(state.dayStart)) {
         return getNetCalories();
     }
-    
+
     // If we have stored data for this date, return it
     if (state.dailyData && state.dailyData[dateKey]) {
-        return state.dailyData[dateKey].netCalories;
+        const dayData = state.dailyData[dateKey];
+
+        // Check if we have calorieLog entries but netCalories is 0
+        if (dayData.netCalories === 0 && dayData.calorieLog && dayData.calorieLog.length > 0) {
+            // Recalculate manualCalories from calorieLog entries
+            let recalculatedManualCalories = 0;
+            dayData.calorieLog.forEach(entry => {
+                recalculatedManualCalories += entry.amount;
+            });
+
+            // Update the stored values
+            dayData.manualCalories = recalculatedManualCalories;
+
+            // Recalculate netCalories (full day of BMR burn)
+            dayData.netCalories = recalculatedManualCalories - dayData.bmr;
+
+            // Save the updated state
+            saveState();
+        }
+
+        return dayData.netCalories;
     }
-    
+
     // Default to 0 if no data
     return 0;
 }
@@ -611,13 +631,13 @@ function updateBMRDisplay() {
 function adjustCalories(amount) {
     // Add or subtract calories
     state.manualCalories += amount;
-    
+
     // Log the adjustment with timestamp
     state.calorieLog.push({
         amount: amount,
         timestamp: Date.now()
     });
-    
+
     updateCalorieDisplay();
     updateProgressRing();
     updateDotsDisplay();
@@ -640,7 +660,7 @@ function getTotalCalories() {
 function updateCalorieDisplay() {
     // Calculate and update the calorie display
     const netCalories = getNetCalories();
-    
+
     calorieValueEl.textContent = netCalories.toLocaleString(undefined, {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1
@@ -658,7 +678,7 @@ function updateProgressRing() {
     // Keep the circle always full
     ringProgress.style.strokeDashoffset = 0;
     ringProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
-    
+
     // Set the color based on deficit or surplus
     const netCalories = getNetCalories();
     if (netCalories < 0) {
@@ -671,12 +691,12 @@ function updateProgressRing() {
 function updateDotsDisplay() {
     // Get the total calories (history + current day)
     const totalCalories = getTotalCalories();
-    
+
     // Calculate pounds and progress
     const totalPounds = Math.floor(Math.abs(totalCalories) / CALORIES_PER_POUND);
     const remainingCalories = Math.abs(totalCalories) % CALORIES_PER_POUND;
     const progressToNextPound = Math.round((remainingCalories / CALORIES_PER_POUND) * 100);
-    
+
     // Update pounds display
     const poundsCount = document.getElementById('pounds-count');
     poundsCount.textContent = totalPounds;
@@ -685,29 +705,29 @@ function updateDotsDisplay() {
     } else {
         poundsCount.style.color = 'var(--primary-color)'; // Green for weight loss
     }
-    
+
     // Update progress percentage
     document.getElementById('progress-to-pound').textContent = progressToNextPound;
-    
+
     // Update dots to show progress to next pound
     const dots = document.querySelectorAll('.dot');
     const dotsToFill = Math.ceil((progressToNextPound / 100) * dots.length);
-    
+
     dots.forEach((dot, index) => {
         // First, remove any existing classes
         dot.classList.remove('active', 'surplus');
-        
+
         // Fill dots based on progress to next pound
         if (index < dotsToFill) {
             dot.classList.add('active');
-            
+
             // If it's a surplus (weight gain), make it red
             if (totalCalories > 0) {
                 dot.classList.add('surplus');
             }
         }
     });
-    
+
     // Add animation class if all dots are filled
     const weightProgress = document.querySelector('.weight-progress');
     if (progressToNextPound >= 95) {
@@ -842,28 +862,28 @@ function updateMonthCalendar(offset = currentMonthOffset) {
 function createCalendarDay(date, dateKey) {
     const dayElement = document.createElement('div');
     dayElement.className = 'calendar-day';
-    
+
     // Check if this is today
     const isToday = date.toDateString() === new Date().toDateString();
     if (isToday) {
         dayElement.classList.add('today');
     }
-    
+
     // Add the day number
     const dayLabel = document.createElement('div');
     dayLabel.className = 'day-label';
     dayLabel.textContent = date.getDate();
     dayElement.appendChild(dayLabel);
-    
+
     // Add calorie information if available
     const netCalories = calculateNetCaloriesForDate(dateKey);
-    
+
     if (netCalories !== 0) {
         const calorieElement = document.createElement('div');
         calorieElement.className = 'calorie-value';
         calorieElement.textContent = netCalories.toFixed(0);
         dayElement.appendChild(calorieElement);
-        
+
         // Add deficit/surplus class
         if (netCalories < 0) {
             dayElement.classList.add('deficit');
@@ -871,7 +891,7 @@ function createCalendarDay(date, dateKey) {
             dayElement.classList.add('surplus');
         }
     }
-    
+
     return dayElement;
 }
 
@@ -905,17 +925,17 @@ function loadState() {
         const savedState = localStorage.getItem('calorieCounterState');
         if (savedState) {
             const parsedState = JSON.parse(savedState);
-            
+
             // Validate the state structure
             if (!parsedState.dayStart || !parsedState.bmr) {
                 console.warn('Invalid state structure detected, resetting state');
                 localStorage.removeItem('calorieCounterState');
                 return null;
             }
-            
+
             // Ensure dailyData exists
             parsedState.dailyData = parsedState.dailyData || {};
-            
+
             return parsedState;
         }
     } catch (e) {
@@ -937,7 +957,7 @@ function saveState() {
             console.error('Invalid state detected, not saving');
             return;
         }
-        
+
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
     } catch (e) {
         console.error('Error saving state:', e);
@@ -982,10 +1002,10 @@ function clearAllData() {
 function displayLog() {
     const logModal = document.getElementById('log-modal');
     const logList = document.getElementById('log-list');
-    
+
     // Clear existing log entries
     logList.innerHTML = '';
-    
+
     // Check if there are log entries
     if (state.calorieLog.length === 0) {
         const emptyMessage = document.createElement('div');
@@ -997,25 +1017,25 @@ function displayLog() {
         for (let i = state.calorieLog.length - 1; i >= 0; i--) {
             const entry = state.calorieLog[i];
             const listItem = document.createElement('li');
-            
+
             // Create time element
             const timeElement = document.createElement('span');
             timeElement.className = 'log-entry-time';
             const entryTime = new Date(entry.timestamp);
             timeElement.textContent = entryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
+
             // Create amount element
             const amountElement = document.createElement('span');
             amountElement.className = entry.amount > 0 ? 'log-entry-amount positive' : 'log-entry-amount negative';
             amountElement.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} kcal`;
-            
+
             // Add elements to list item
             listItem.appendChild(timeElement);
             listItem.appendChild(amountElement);
             logList.appendChild(listItem);
         }
     }
-    
+
     // Show the log modal
     logModal.classList.add('active');
 }
