@@ -100,13 +100,13 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="data-management">
             <button id="export-btn" class="data-btn">Export Data</button>
             <button id="import-btn" class="data-btn">Import Data</button>
             <input type="file" id="import-file" accept=".json" style="display: none;">
         </div>
-        
+
         <!-- Modal for import/export messages -->
         <div id="modal" class="modal">
             <div class="modal-content">
@@ -117,7 +117,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Log Modal -->
         <div id="log-modal" class="modal">
             <div class="modal-content log-modal-content">
@@ -127,6 +127,22 @@
                 </div>
                 <div class="modal-buttons">
                     <button id="log-modal-close" class="modal-btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Calories Modal -->
+        <div id="edit-calories-modal" class="modal">
+            <div class="modal-content">
+                <h3>Edit Calories</h3>
+                <p id="edit-calories-date"></p>
+                <div class="edit-calories-input-container">
+                    <label for="edit-calories-input">Manual Calories:</label>
+                    <input type="number" id="edit-calories-input" step="100">
+                </div>
+                <div class="modal-buttons">
+                    <button id="edit-calories-save" class="modal-btn">Save</button>
+                    <button id="edit-calories-cancel" class="modal-btn cancel">Cancel</button>
                 </div>
             </div>
         </div>

@@ -989,3 +989,42 @@ body.month-view-active #month-view {
     margin-bottom: 8px;
     gap: 10px;
 }
+
+/* Edit Calories Modal styles */
+#edit-calories-date {
+    margin: 10px 0;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.edit-calories-input-container {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-calories-input-container label {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+#edit-calories-input {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 5px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 16px;
+    text-align: center;
+}
+
+#edit-calories-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}

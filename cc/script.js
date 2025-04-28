@@ -892,6 +892,11 @@ function createCalendarDay(date, dateKey) {
         }
     }
 
+    // Add click event listener to edit calories
+    dayElement.addEventListener('click', () => {
+        showEditCaloriesDialog(date, dateKey);
+    });
+
     return dayElement;
 }
 
@@ -1044,6 +1049,99 @@ function displayLog() {
 function closeLogModal() {
     const logModal = document.getElementById('log-modal');
     logModal.classList.remove('active');
+}
+
+// Show the edit calories dialog
+function showEditCaloriesDialog(date, dateKey) {
+    const modal = document.getElementById('edit-calories-modal');
+    const dateDisplay = document.getElementById('edit-calories-date');
+    const caloriesInput = document.getElementById('edit-calories-input');
+    const saveButton = document.getElementById('edit-calories-save');
+    const cancelButton = document.getElementById('edit-calories-cancel');
+
+    // Format the date for display
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    dateDisplay.textContent = date.toLocaleDateString(undefined, options);
+
+    // Get the current manual calories for this date
+    let manualCalories = 0;
+    if (dateKey === formatDateKey(state.dayStart)) {
+        // If it's today, use the current manual calories
+        manualCalories = state.manualCalories;
+    } else if (state.dailyData && state.dailyData[dateKey]) {
+        // If it's a past day, use the stored manual calories
+        manualCalories = state.dailyData[dateKey].manualCalories;
+    }
+
+    // Set the input value
+    caloriesInput.value = manualCalories;
+
+    // Set up the save button
+    saveButton.onclick = () => {
+        saveEditedCalories(dateKey, parseInt(caloriesInput.value) || 0);
+        closeEditCaloriesModal();
+    };
+
+    // Set up the cancel button
+    cancelButton.onclick = closeEditCaloriesModal;
+
+    // Show the modal
+    modal.classList.add('active');
+}
+
+// Close the edit calories modal
+function closeEditCaloriesModal() {
+    const modal = document.getElementById('edit-calories-modal');
+    modal.classList.remove('active');
+}
+
+// Save the edited calories
+function saveEditedCalories(dateKey, manualCalories) {
+    if (dateKey === formatDateKey(state.dayStart)) {
+        // If it's today, update the current manual calories
+        state.manualCalories = manualCalories;
+
+        // Clear the calorie log and add a single entry for the manual edit
+        state.calorieLog = [{
+            amount: manualCalories,
+            timestamp: Date.now()
+        }];
+    } else if (state.dailyData && state.dailyData[dateKey]) {
+        // If it's a past day, update the stored manual calories
+        const dayData = state.dailyData[dateKey];
+        dayData.manualCalories = manualCalories;
+
+        // Recalculate net calories (full day of BMR burn)
+        dayData.netCalories = manualCalories - dayData.bmr;
+
+        // Clear the calorie log and add a single entry for the manual edit
+        dayData.calorieLog = [{
+            amount: manualCalories,
+            timestamp: Date.now()
+        }];
+    } else {
+        // If there's no data for this date yet, create it
+        const bmr = state.bmr; // Use current BMR
+        state.dailyData[dateKey] = {
+            bmr: bmr,
+            manualCalories: manualCalories,
+            netCalories: manualCalories - bmr,
+            date: dateKey,
+            calorieLog: [{
+                amount: manualCalories,
+                timestamp: Date.now()
+            }]
+        };
+    }
+
+    // Save the updated state
+    saveState();
+
+    // Update the UI
+    updateCalorieDisplay();
+    updateProgressRing();
+    updateDotsDisplay();
+    updateCalendarViews();
 }
 
 function addSwipeListenersWeekView() {
