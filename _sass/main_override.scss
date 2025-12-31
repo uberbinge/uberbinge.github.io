@@ -1,19 +1,718 @@
 // Hook to override any styles
+
+// ============================================
+// CSS Custom Properties for Light/Dark Mode
+// ============================================
+
+:root,
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --bg-secondary: #f8f8f8;
+    --text-color: #1a1a1a;
+    --text-secondary: #666666;
+    --accent-color: #4a9f6e;
+    --accent-hover: #3d8a5c;
+    --border-color: #e0e0e0;
+    --code-bg: #f5f5f5;
+    --code-text: #1a1a1a;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1b1e;
+    --bg-secondary: #242528;
+    --text-color: #e0e0e0;
+    --text-secondary: #888888;
+    --accent-color: #6dbf8b;
+    --accent-hover: #8fd4a5;
+    --border-color: #333333;
+    --code-bg: #2a2b2e;
+    --code-text: #e0e0e0;
+}
+
+// ============================================
+// Base Styles
+// ============================================
+
+html {
+    background-color: var(--bg-color);
+    transition: background-color 0.2s ease;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: $font-size-regular;
+    line-height: $base-line-height;
+}
+
+// ============================================
+// Layout
+// ============================================
+
 .post-index, .post, .site-footer {
     display: grid;
     align-content: center;
-
     grid-template-columns:
         1fr
-        #{"min(65ch, 100%)"}
+        #{"min(70ch, 100%)"}
         1fr;
 
-    @include media-query-small-screen() {min-width: $mobile-width;}
+    @include media-query-small-screen() {
+        min-width: $mobile-width;
+    }
 
     > * {
         grid-column: 2;
         margin-right: $spacing-unit;
         margin-left: $spacing-unit;
     }
+}
 
+// ============================================
+// Header
+// ============================================
+
+.site-header {
+    padding: $spacing-unit;
+    max-width: 70ch;
+    margin: 0 auto;
+
+    #banner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0;
+
+        h1 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .site-title {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+    }
+}
+
+// Theme toggle button
+#theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: var(--text-color);
+    }
+}
+
+// ============================================
+// Links
+// ============================================
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+}
+
+// ============================================
+// Headings
+// ============================================
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+    font-family: $header-font-family;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+// ============================================
+// Hero Section
+// ============================================
+
+.index-hero {
+    padding: $spacing-unit * 3 $spacing-unit;
+    margin-bottom: $spacing-unit * 2;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+
+    @include media-query-small-screen() {
+        padding: $spacing-unit * 2 $spacing-unit;
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 70ch;
+        
+        .hero-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 0 auto $spacing-unit * 0.5 auto;
+            color: var(--text-color);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            
+            @include media-query-small-screen() {
+                font-size: 2em;
+            }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25em;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-width: 55ch;
+            margin: 0 auto $spacing-unit auto;
+            
+            @include media-query-small-screen() {
+                font-size: 1.1em;
+            }
+        }
+        
+        .hero-cta {
+            margin-top: $spacing-unit * 1.5;
+            display: flex;
+            justify-content: center;
+            
+            .hero-link {
+                display: inline-block;
+                padding: $spacing-unit * 0.6 $spacing-unit * 1.2;
+                background-color: var(--accent-color);
+                color: var(--bg-color);
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                
+                &:hover {
+                    background-color: var(--accent-hover);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}
+
+// ============================================
+// Post Index / Landing Page
+// ============================================
+
+.post-index {
+    padding-top: 0;
+}
+
+h2.post-list-header {
+    color: var(--text-secondary);
+    font-family: $fixed-width-font-family;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: $spacing-unit * 2;
+    margin-bottom: $spacing-unit / 2;
+    padding-bottom: $spacing-unit / 4;
+    border-bottom: 1px solid var(--border-color);
+
+    &:first-child {
+        margin-top: $spacing-unit;
+    }
+}
+
+ul.post-list-content {
+    list-style: none;
+    margin-left: 0;
+    float: none;
+
+    .post-link {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 0.75rem 0;
+        font-family: $font-family-base;
+        float: none;
+
+        @include media-query-small-screen() {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .post-link-date {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            min-width: 70px;
+        }
+
+        a.post-link-url {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+
+        .linklog {
+            color: var(--accent-color);
+            font-family: $fixed-width-font-family;
+            text-decoration: none;
+            margin-left: 0.25rem;
+        }
+    }
+}
+
+.draft {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    font-family: $fixed-width-font-family;
+    margin-left: 0.5rem;
+}
+
+// ============================================
+// Post Content
+// ============================================
+
+.post {
+    padding-top: 0;
+
+    .post-header {
+        margin-top: $spacing-unit;
+        margin-bottom: $spacing-unit / 2;
+
+        @include media-query-small-screen() {
+            margin-top: $spacing-unit / 2;
+        }
+
+        .post-title {
+            color: var(--text-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: $header-font-family;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+
+            @include media-query-small-screen() {
+                font-size: 1.5rem;
+            }
+
+            .article-link {
+                color: var(--text-color);
+                text-decoration: none;
+
+                &:hover {
+                    color: var(--accent-color);
+                }
+            }
+        }
+
+        .post-author {
+            color: var(--text-secondary);
+            font-style: normal;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.post-meta {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+
+    .post-date {
+        color: var(--text-secondary);
+    }
+
+    .post-permalink {
+        border-top: 1px solid var(--border-color);
+
+        a {
+            color: var(--text-color);
+
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+    }
+
+    .post-category {
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        padding: 4px 8px;
+
+        &:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+
+    .post-related {
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-secondary);
+
+        &:hover {
+            border-color: var(--text-secondary);
+        }
+
+        a {
+            color: var(--text-color);
+
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+    }
+}
+
+.post-content {
+    font-size: $font-size-regular;
+    line-height: $base-line-height;
+    max-width: 80ch;
+
+    p {
+        margin-bottom: $spacing-unit;
+    }
+
+    a {
+        color: var(--accent-color);
+        text-decoration: underline;
+        text-decoration-color: var(--border-color);
+        text-underline-offset: 3px;
+
+        &:hover {
+            text-decoration-color: var(--accent-color);
+        }
+    }
+
+    h1, h2, h3 {
+        color: var(--text-color);
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        margin: 2.5rem 0 1rem 0;
+    }
+
+    h2 {
+        font-size: 1.375rem;
+        font-style: normal;
+        margin: 2rem 0 0.75rem 0;
+    }
+
+    h3 {
+        font-size: 1.125rem;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: $spacing-unit 0;
+    }
+}
+
+// ============================================
+// Code
+// ============================================
+
+code {
+    font-family: $fixed-width-font-family;
+    font-size: 0.875em;
+    background-color: var(--code-bg) !important;
+    color: var(--code-text) !important;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+pre {
+    background-color: var(--code-bg) !important;
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 1.5rem 0;
+
+    code {
+        padding: 0;
+        background: none !important;
+    }
+}
+
+article.post-content {
+    p > code,
+    li > code {
+        background-color: var(--code-bg) !important;
+        color: var(--code-text) !important;
+    }
+}
+
+// ============================================
+// Blockquotes
+// ============================================
+
+blockquote {
+    border-left: 3px solid var(--accent-color);
+    padding-left: $spacing-unit / 2;
+    margin: $spacing-unit 0;
+    color: var(--text-secondary);
+    font-style: italic;
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+// ============================================
+// Sidenotes & Footnotes
+// ============================================
+
+.sidenote {
+    color: var(--text-secondary);
+    border-left: 1px solid var(--border-color);
+}
+
+.sidenote-hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.footnotes {
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+a.footnote {
+    color: var(--accent-color);
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+// ============================================
+// Callout
+// ============================================
+
+.callout {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+// ============================================
+// Footer
+// ============================================
+
+.site-footer {
+    padding: $spacing-unit * 2 0;
+    margin-top: $spacing-unit * 2;
+    border-top: 1px solid var(--border-color);
+
+    .newsletter {
+        input {
+            font-family: $font-family-base;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+
+            &:focus {
+                border-color: var(--accent-color);
+                outline: none;
+            }
+        }
+
+        input[type=submit] {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--accent-hover);
+            }
+        }
+    }
+}
+
+.site-nav {
+    ul {
+        .nav-link {
+            color: var(--text-color);
+            border-color: transparent;
+
+            &:hover {
+                color: var(--accent-color);
+                border-color: var(--accent-color);
+            }
+        }
+    }
+}
+
+// ============================================
+// Icons
+// ============================================
+
+.icon > svg path {
+    fill: var(--text-secondary);
+}
+
+// ============================================
+// Images
+// ============================================
+
+figure {
+    margin: $spacing-unit 0;
+}
+
+figcaption {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-family: $font-family-base;
+}
+
+img {
+    border-radius: 4px;
+}
+
+// ============================================
+// About Page
+// ============================================
+
+.about-hero {
+    padding: $spacing-unit * 2 0;
+    margin-bottom: $spacing-unit * 2;
+    border-bottom: 1px solid var(--border-color);
+    
+    .about-content {
+        .about-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 0 0 $spacing-unit 0;
+            color: var(--text-color);
+            letter-spacing: -0.03em;
+            
+            @include media-query-small-screen() {
+                font-size: 1.8em;
+            }
+        }
+        
+        .about-intro {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 55ch;
+        }
+    }
+}
+
+.about-body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-unit * 2;
+    
+    .about-section {
+        margin-bottom: $spacing-unit;
+        
+        h2 {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 0 0 $spacing-unit 0;
+            color: var(--text-color);
+            font-style: normal;
+        }
+        
+        p {
+            font-size: 1em;
+            line-height: 1.7;
+            color: var(--text-color);
+            margin-bottom: $spacing-unit * 0.75;
+        }
+    }
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-unit * 0.75;
+    
+    li {
+        padding: $spacing-unit * 0.5;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.95em;
+        color: var(--text-secondary);
+        text-align: center;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background-color: rgba(74, 159, 110, 0.08);
+        }
+    }
+}
+
+.social-links {
+    display: flex;
+    gap: $spacing-unit * 0.75;
+    margin-top: $spacing-unit;
+    
+    @include media-query-small-screen() {
+        flex-direction: column;
+    }
+    
+    .social-link {
+        display: inline-block;
+        padding: $spacing-unit * 0.5 $spacing-unit;
+        border: 2px solid var(--accent-color);
+        border-radius: 4px;
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95em;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+    }
 }
