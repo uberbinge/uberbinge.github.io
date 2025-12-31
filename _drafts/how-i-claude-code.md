@@ -4,7 +4,11 @@ title: How I Claude Code
 permalink: how-i-claude-code
 ---
 
-A few months ago, Claude Code went from "interesting experiment" to "can't imagine working without it." Here's how I've shaped it into my daily workflow.
+At some point, I noticed I was spending more energy re-establishing context than actually doing the work. Explaining the stack again. Retracing familiar debugging steps. Remembering commands I already knew. None of it was hard, but all of it broke the thread.
+
+I didn't want another assistant adding noise. I wanted something that stayed in step with how I actually work—something that understood the patterns without needing to relearn them every time.
+
+This is what that ended up looking like.
 
 ## It's Not Just a Chatbot
 
@@ -66,25 +70,9 @@ I invoke it with: *"Review my changes before committing"* and it catches the cre
 
 ## Skills for Domain Knowledge
 
-Beyond workflow skills, I have domain-specific skills that encode institutional knowledge.
+Beyond workflow skills, domain-specific skills encode institutional knowledge—the tribal stuff that lives in someone's head or a forgotten wiki.
 
-**open-search-query** is a perfect example. It knows:
-- Our three environments (dev, int, prd) with their specific endpoints
-- The correct AWS SSO profiles for each (`trip.dev`, `trip.int`, `trip.prd`)
-- Index patterns (`applications-*`, `k8s-*`, `vehicle-integration-logs-*`)
-- Field names for our logs (`tripId`, `vehicleId`, `requestId`, `traceId`)
-- Common query patterns pre-built
-
-Without this skill, I'd be copy-pasting awscurl commands and looking up field names. Now I just say "search for errors in prd with tripId X" and it constructs:
-
-```bash
-bash -c 'unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN && \
-  aws-sso exec -p trip.prd -- awscurl --service es -XPOST \
-  "https://search-cfn-ela.../_search" \
-  -d '{"query": {"term": {"tripId": "<trip-id>"}}}'
-```
-
-The skill even handles the AWS credential conflict workaround (unsetting env vars before aws-sso exec). That's tribal knowledge that would otherwise live in someone's head or a wiki nobody reads.
+A skill might know all the OpenSearch environments and their endpoints, the right AWS profiles, common query patterns, the field names scattered across your logs. Without it, you're copy-pasting commands and hunting for details. With it, you describe what you need and it constructs the right thing. The knowledge stays encoded, not forgotten.
 
 ## The Structure That Matters
 
@@ -103,21 +91,15 @@ Here's my `~/.claude/` directory structure:
 │   │   └── SKILL.md
 │   └── open-search-query/
 │       └── SKILL.md
-├── slash-commands/
-│   ├── commit.md
-│   ├── PRs.md          # Dependabot automation
-│   └── worklog.md
-└── workflows/
-    └── templates/
-        ├── feature-workflow.md
-        └── bugfix-workflow.md
+└── slash-commands/
+    ├── commit.md
+    └── worklog.md
 ```
 
 Each piece has a purpose:
 - **Agents**: Specialized personas for different types of work
 - **Skills**: Multi-step workflows Claude executes (SKILL.md files)
 - **Slash commands**: Quick actions invoked with `/command`
-- **Workflows**: Templates for larger processes (feature dev, bugfixes)
 
 ## What Actually Changed
 
@@ -139,12 +121,12 @@ I've learned to be specific: "Fix the null check in line 47" beats "fix this bug
 
 ## The Meta Skill
 
-The real skill isn't prompting. It's knowing what to encode.
+The real skill isn't prompting. It's context engineering.
 
-Every time I repeat a workflow more than twice, I consider: should this be a skill? Every time I explain context that should be obvious, I consider: should this be in an agent definition?
+Not context dumping—I'm careful about what goes into CLAUDE.md and agents. Too much noise and Claude gets confused. Too little and it defaults to generic advice. The goal is precision: enough information to eliminate guessing, not so much that it becomes cargo cult.
 
-The goal isn't automating everything. It's eliminating the friction that breaks flow.
+It's also about nudging. When dev-functional suggests something I disagree with, I don't ask it to "be better"—I give it the specific constraint it missed. *"This approach won't work because our CDK stack expects immutable configurations."* Now it understands the real boundary, not an invented one.
 
----
+Every time I repeat a workflow more than twice, I ask: should this be encoded as a skill? Every time I catch myself explaining obvious context, I ask: should this live in an agent definition? The goal is to move friction out of sight so thinking can be effortless again.
 
-*How do you Claude Code? I'm curious what workflows others have built.*
+That's the practice: engineering context with enough precision that the agent becomes an extension of your actual thinking, not a placeholder for it.
