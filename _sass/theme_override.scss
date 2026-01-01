@@ -6,12 +6,12 @@ $header-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-se
 $header-2-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 $fixed-width-font-family: 'IBM Plex Mono', 'SF Mono', 'Consolas', monospace;
 
-// Font sizes - slightly smaller for monospace readability
-$font-size-regular: 16px;
-$base-line-height: 1.6;
+// Font sizes - slightly larger for editorial reading
+$font-size-regular: 17px;
+$base-line-height: 1.7;
 
 // Spacing
-$spacing-unit: 32px;
+$spacing-unit: 28px;
 
 // These will be overridden by CSS custom properties
 $background-color: #ffffff;
