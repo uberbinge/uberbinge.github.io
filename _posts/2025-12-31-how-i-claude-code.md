@@ -6,9 +6,9 @@ permalink: how-i-claude-code
 
 At some point, I noticed I was spending more energy re-establishing context than actually doing the work. Explaining the stack again. Retracing familiar debugging steps. Remembering commands I already knew. None of it was hard, but all of it broke the flow and felt waste.
 
-I didn't want another assistant adding noise. I wanted something that stayed in step with how I actually work, something that understood the patterns without needing to relearn them every time.
+I didn't want another assistant adding noise. I wanted something that kept up with how I actually work, something that understood the patterns without needing to relearn them every time.
 
-This is what that ended up looking like.
+This is what _that_ ended up looking like.
 
 ## It's Not Just a Chatbot
 
@@ -122,6 +122,6 @@ Not context dumping, I’m careful about what goes into CLAUDE.md and agents. To
 
 It's also about nudging. When dev-functional suggests something I disagree with, I don't ask it to "be better”, I give it the specific constraint it missed. *"This approach won't work because our CDK stack expects immutable configurations."* Now it understands the real boundary, not an invented one.
 
-Every time I repeat a workflow more than three times, I ask: should this be encoded as a skill? Every time I catch myself explaining obvious context, I ask: should this live in an agent definition? The goal is to move friction out of sight so thinking can be effortless again.
+Every time I repeat a workflow more than three times, I ask: should this be encoded as a skill? Every time I catch myself explaining obvious context, I ask: should this live in an agent definition? The goal is to remove friction, so thinking can be effortless again.
 
 That’s the practice: engineering context with enough precision that the agent becomes an extension of your thinking, not a substitute for it.
