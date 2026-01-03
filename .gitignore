@@ -46,3 +46,4 @@ node_modules
 # Sass
 .sass-cache
 .jekyll-metadata
+.playwright-mcp/
