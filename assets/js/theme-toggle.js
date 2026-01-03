@@ -15,10 +15,11 @@
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
 
-        // Update toggle button aria-label if it exists (SVG icons handled by CSS)
+        // Update toggle button icon if it exists
         const toggle = document.getElementById('theme-toggle');
         if (toggle) {
             toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+            toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
         }
     }
 
