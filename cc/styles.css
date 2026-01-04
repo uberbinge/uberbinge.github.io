@@ -509,6 +509,8 @@ body {
 .view {
     display: none;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     animation: fadeIn 0.3s ease;
 }
 
@@ -633,16 +635,19 @@ body.month-view-active .calorie-buttons {
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 100%;
     margin-top: 16px;
     opacity: 0;
     height: 0;
     overflow: hidden;
     transition: opacity 0.3s ease;
+    box-sizing: border-box;
 }
 
 .calendar-container.active {
     opacity: 1;
     height: auto;
+    overflow: visible;
 }
 
 .calendar-nav-row {
@@ -688,8 +693,10 @@ body.month-view-active .calorie-buttons {
 .calendar-month {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 4px;
+    width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 .day-header {
