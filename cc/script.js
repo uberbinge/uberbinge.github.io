@@ -286,7 +286,7 @@ const CIRCLE_RADIUS = 90;
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 const CALORIES_PER_POUND = 3500; // 3500 kcal ≈ 1lb of fat
 const DAY_IN_MS = 24 * 60 * 60 * 1000; // Milliseconds in a day
-const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; // ISO week starts Monday
 
 // Theme detection - safely check if the browser supports it
 const prefersDarkScheme = window.matchMedia ? 
@@ -747,7 +747,10 @@ function updateCalendarViews() {
 function getStartOfWeek(date) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() - d.getDay()); // Sunday
+    // ISO week starts on Monday (getDay: 0=Sun, 1=Mon, ... 6=Sat)
+    const dayOfWeek = d.getDay();
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday, go back 6 days; otherwise go to Monday
+    d.setDate(d.getDate() + diff);
     return d;
 }
 
@@ -827,7 +830,8 @@ function updateMonthCalendar(offset = currentMonthOffset) {
     const currentMonth = monthStart.getMonth();
     const currentYear = monthStart.getFullYear();
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const startingDay = firstDay.getDay();
+    // Convert to ISO week (Monday=0, Sunday=6) from JS getDay (Sunday=0, Saturday=6)
+    const startingDay = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     // Empty cells before first day
     for (let i = 0; i < startingDay; i++) {
