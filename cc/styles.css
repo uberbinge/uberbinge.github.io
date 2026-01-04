@@ -726,14 +726,15 @@ body.month-view-active .calorie-buttons {
 .calendar-day .day-label {
     font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-primary);
     margin-bottom: 2px;
 }
 
 .calendar-day .calorie-value {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-secondary);
 }
 
@@ -742,7 +743,8 @@ body.month-view-active .calorie-buttons {
 }
 
 .calendar-day.deficit .calorie-value {
-    color: var(--color-deficit);
+    color: #0f766e; /* Darker teal for better contrast */
+    font-weight: 600;
 }
 
 .calendar-day.surplus {
@@ -750,7 +752,26 @@ body.month-view-active .calorie-buttons {
 }
 
 .calendar-day.surplus .calorie-value {
-    color: var(--color-surplus);
+    color: #be123c; /* Darker rose for better contrast */
+    font-weight: 600;
+}
+
+/* Dark mode calendar text colors */
+.dark-mode .calendar-day.deficit .calorie-value {
+    color: #5eead4; /* Brighter teal for dark backgrounds */
+}
+
+.dark-mode .calendar-day.surplus .calorie-value {
+    color: #fb7185; /* Brighter rose for dark backgrounds */
+}
+
+@media (prefers-color-scheme: dark) {
+    .auto-theme .calendar-day.deficit .calorie-value {
+        color: #5eead4;
+    }
+    .auto-theme .calendar-day.surplus .calorie-value {
+        color: #fb7185;
+    }
 }
 
 .calendar-day.today {
@@ -1037,11 +1058,11 @@ body.month-view-active .calorie-buttons {
     }
 
     .calendar-day .day-label {
-        font-size: 11px;
+        font-size: 12px;
     }
 
     .calendar-day .calorie-value {
-        font-size: 9px;
+        font-size: 10px;
     }
 }
 
