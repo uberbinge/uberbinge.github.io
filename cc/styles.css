@@ -1,70 +1,125 @@
+/* ============================================
+   CALORIE COUNTER - Refined Minimalist Design
+   ============================================ */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* Typography */
 :root {
-    --background-color: #ffffff;
-    --text-color: #333333;
-    --primary-color: #4caf50;
-    --secondary-bg: #f0f0f0;
-    --add-btn-bg: #ffebee;
-    --add-btn-color: #f44336;
-    --subtract-btn-bg: #ddffdd;
-    --subtract-btn-color: var(--primary-color);
-    --ring-bg: #eeeeee;
-    --slider-thumb-color: var(--primary-color);
-    --accent-color: #4caf50;
-    --accent-hover: #3e8e41;
-    --bg-color: #ffffff;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'DM Mono', 'SF Mono', 'Menlo', monospace;
+
+    /* Light theme - Refined palette */
+    --bg-primary: #fafafa;
+    --bg-secondary: #f0f0f0;
+    --bg-elevated: #ffffff;
+    --text-primary: #1a1a2e;
+    --text-secondary: #64648c;
+    --text-muted: #9999b3;
+
+    /* Semantic colors */
+    --color-deficit: #0d9488;      /* Teal - healthy/good */
+    --color-deficit-soft: #ccfbf1;
+    --color-deficit-glow: rgba(13, 148, 136, 0.15);
+
+    --color-surplus: #e11d48;      /* Rose - warning */
+    --color-surplus-soft: #ffe4e6;
+    --color-surplus-glow: rgba(225, 29, 72, 0.15);
+
+    /* Action colors */
+    --color-eat: #f59e0b;          /* Amber - food/energy */
+    --color-eat-soft: #fef3c7;
+    --color-burn: #06b6d4;         /* Cyan - exercise/burn */
+    --color-burn-soft: #cffafe;
+
+    /* UI colors */
+    --color-accent: #6366f1;       /* Indigo */
+    --color-accent-soft: #e0e7ff;
+    --ring-bg: #e5e5e5;
+    --border-color: rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* OS dark theme detection - only applies when app is in auto mode */
+/* Dark theme */
+.dark-mode {
+    --bg-primary: #0f0f17;
+    --bg-secondary: #1a1a28;
+    --bg-elevated: #24243a;
+    --text-primary: #f0f0f5;
+    --text-secondary: #a0a0b8;
+    --text-muted: #6a6a88;
+
+    --color-deficit-soft: rgba(13, 148, 136, 0.2);
+    --color-surplus-soft: rgba(225, 29, 72, 0.2);
+    --color-eat-soft: rgba(245, 158, 11, 0.2);
+    --color-burn-soft: rgba(6, 182, 212, 0.2);
+    --color-accent-soft: rgba(99, 102, 241, 0.2);
+
+    --ring-bg: #2a2a40;
+    --border-color: rgba(255, 255, 255, 0.06);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Auto theme - follows OS preference */
 @media (prefers-color-scheme: dark) {
     body.auto-theme {
-        --background-color: #121212;
-        --text-color: #e0e0e0;
-        --secondary-bg: #1e1e1e;
-        --add-btn-bg: #3a0a0a;
-        --add-btn-color: #f44336;
-        --subtract-btn-bg: #0a2e0a;
-        --subtract-btn-color: var(--primary-color);
-        --ring-bg: #333333;
+        --bg-primary: #0f0f17;
+        --bg-secondary: #1a1a28;
+        --bg-elevated: #24243a;
+        --text-primary: #f0f0f5;
+        --text-secondary: #a0a0b8;
+        --text-muted: #6a6a88;
+
+        --color-deficit-soft: rgba(13, 148, 136, 0.2);
+        --color-surplus-soft: rgba(225, 29, 72, 0.2);
+        --color-eat-soft: rgba(245, 158, 11, 0.2);
+        --color-burn-soft: rgba(6, 182, 212, 0.2);
+        --color-accent-soft: rgba(99, 102, 241, 0.2);
+
+        --ring-bg: #2a2a40;
+        --border-color: rgba(255, 255, 255, 0.06);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 }
 
-.dark-mode {
-    --background-color: #121212;
-    --text-color: #e0e0e0;
-    --secondary-bg: #1e1e1e;
-    --add-btn-bg: #3a0a0a;
-    --add-btn-color: #f44336;
-    --subtract-btn-bg: #0a2e0a;
-    --subtract-btn-color: var(--primary-color);
-    --ring-bg: #333333;
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html {
+    height: 100%;
+    height: -webkit-fill-available;
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-    margin: 0;
-    padding: 0;
+    font-family: var(--font-body);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
     min-height: -webkit-fill-available;
     display: flex;
     justify-content: center;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fix for Firefox mobile */
+/* Firefox fixes */
 @-moz-document url-prefix() {
     body {
         height: 100%;
         min-height: 100vh;
     }
-
     html {
         height: -moz-available;
         min-height: 100vh;
@@ -73,233 +128,224 @@ body {
 
 .container {
     width: 100%;
-    max-width: 375px;
-    padding: 20px;
+    max-width: 400px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
-    background-color: var(--background-color);
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
-/* Firefox-specific container fixes */
-@-moz-document url-prefix() {
-    .container {
-        height: auto;
-        min-height: calc(100vh - 40px);
-        max-height: none;
-        border-radius: 0;
-    }
-}
+/* ============================================
+   HEADER
+   ============================================ */
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-top: 20px;
+    margin-bottom: 32px;
+    padding-top: 12px;
 }
 
 .time-display {
-    font-size: 14px;
-    color: var(--text-color);
-    opacity: 0.7;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: -0.02em;
 }
 
 .controls {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .controls button {
-    background-color: var(--secondary-bg);
-    border: none;
-    border-radius: 15px;
-    padding: 5px 10px;
-    font-size: 14px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    color: var(--text-color);
-    transition: background-color 0.3s, transform 0.2s;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
 .controls button:hover {
-    transform: translateY(-2px);
+    background-color: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
 }
 
 .controls button:active {
     transform: translateY(0);
+    box-shadow: none;
 }
 
 #reset-btn {
-    color: #3498db;
+    color: var(--color-accent);
 }
 
-.reset-active {
-    background-color: #3498db !important;
-    color: white !important;
-    transform: scale(1.05);
-    transition: all 0.3s ease;
+#log-btn {
+    color: var(--color-accent);
 }
 
 #github-link {
-    padding: 5px 8px;
+    padding: 8px 10px;
 }
 
 .github-icon {
-    fill: var(--text-color);
-    transition: fill 0.3s;
+    fill: var(--text-secondary);
+    transition: fill 0.2s ease;
 }
 
 #github-link:hover .github-icon {
-    fill: var(--primary-color);
+    fill: var(--text-primary);
 }
+
+/* ============================================
+   BMR SECTION
+   ============================================ */
 
 .bmr-section {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: var(--bg-elevated);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
 }
 
 .bmr-label {
-    font-size: 16px;
-    margin-bottom: 15px;
-    color: var(--text-color);
-    opacity: 0.7;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
 }
 
 .bmr-values {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding: 0 20px;
 }
 
 .bmr-value {
-    font-size: 16px;
-    opacity: 0.5;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
 }
 
 .bmr-value.current {
-    font-size: 20px;
-    font-weight: bold;
-    opacity: 1;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
 #bmr-slider {
     width: 100%;
+    height: 8px;
     -webkit-appearance: none;
     appearance: none;
-    height: 6px;
-    background: var(--secondary-bg);
-    border-radius: 3px;
+    background: var(--ring-bg);
+    border-radius: 4px;
     outline: none;
+    cursor: pointer;
 }
 
 #bmr-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--slider-thumb-color);
+    width: 24px;
+    height: 24px;
+    background: var(--color-accent);
     border-radius: 50%;
     cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#bmr-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg);
 }
 
 #bmr-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: var(--slider-thumb-color);
+    width: 24px;
+    height: 24px;
+    background: var(--color-accent);
     border-radius: 50%;
     cursor: pointer;
     border: none;
+    box-shadow: var(--shadow-md);
 }
 
-/* Safari specific styles */
-@supports (-webkit-touch-callout: none) {
-    .ring-container svg {
-        /* Fix for Safari SVG rendering */
-        transform: translateZ(0);
-    }
-
-    .ring-progress {
-        /* Ensure smooth animations in Safari */
-        -webkit-transform: rotate(-90deg);
-        transform: rotate(-90deg);
-        -webkit-transform-origin: 50% 50%;
-        transform-origin: 50% 50%;
-        -webkit-transition: stroke-dashoffset 0.3s ease;
-        transition: stroke-dashoffset 0.3s ease;
-    }
-
-    /* iOS Safari modal fixes */
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .modal-content {
-        position: relative;
-        margin: auto;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        max-height: 80%;
-    }
-
-    .log-modal-content, 
-    .log-list-container {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    }
-}
+/* ============================================
+   CALORIE DISPLAY - The Hero
+   ============================================ */
 
 .calorie-display {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0 40px;
-    transition: opacity 0.3s, height 0.3s;
-    overflow: visible;
-    min-height: 220px;
+    margin: 16px 0 32px;
+    min-height: 240px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .progress-ring {
     position: relative;
-    width: 220px;
-    height: 220px;
-    margin: 0 auto;
+    width: 240px;
+    height: 240px;
 }
 
 .ring {
     width: 100%;
     height: 100%;
     overflow: visible;
+    filter: drop-shadow(0 4px 20px var(--color-deficit-glow));
+    transition: filter 0.4s ease;
+}
+
+.ring.surplus-active {
+    filter: drop-shadow(0 4px 20px var(--color-surplus-glow));
 }
 
 .ring-background {
     fill: none;
     stroke: var(--ring-bg);
-    stroke-width: 10;
+    stroke-width: 12;
 }
 
 .ring-progress {
     fill: none;
-    stroke: var(--primary-color);
-    stroke-width: 10;
+    stroke: var(--color-deficit);
+    stroke-width: 12;
     stroke-linecap: round;
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
-    transition: stroke-dashoffset 0.3s;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
 }
 
 .calorie-count {
@@ -308,8 +354,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    width: 100%;
-    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -317,395 +361,177 @@ body {
 }
 
 #calorie-value {
-    font-size: 40px;
-    font-weight: bold;
-    line-height: 1.1;
-    margin-bottom: 5px;
-    color: var(--primary-color);
-    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-deficit);
+    letter-spacing: -0.02em;
+    transition: color 0.4s ease, transform 0.15s ease;
+}
+
+#calorie-value.bump {
+    transform: scale(1.05);
 }
 
 .unit {
-    font-size: 16px;
-    color: var(--primary-color);
-    opacity: 0.8;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-/* Improve calorie display for different browsers */
-@media (max-width: 480px) {
-    #calorie-value {
-        font-size: 36px;
-        line-height: 1;
-    }
-
-    .unit {
-        font-size: 14px;
-        margin-top: 2px;
-    }
+/* Surplus state */
+#calorie-value.surplus {
+    color: var(--color-surplus);
 }
 
-/* Firefox-specific calorie display fixes */
-@-moz-document url-prefix() {
-    .calorie-count {
-        padding: 0;
-        width: 90%;
-    }
-
-    #calorie-value {
-        font-size: 36px;
-        line-height: 1;
-        margin-bottom: 2px;
-    }
-
-    .unit {
-        font-size: 14px;
-    }
-
-    @media (max-width: 480px) {
-        #calorie-value {
-            font-size: 32px;
-        }
-
-        .unit {
-            font-size: 12px;
-        }
-    }
+.ring-progress.surplus {
+    stroke: var(--color-surplus);
 }
+
+/* ============================================
+   CALORIE BUTTONS
+   ============================================ */
 
 .calorie-buttons {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 40px;
-    transition: opacity 0.3s, height 0.3s;
-    overflow: hidden;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 32px;
 }
 
 .calorie-buttons button {
     border: none;
-    border-radius: 20px;
-    padding: 12px 30px;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-family: var(--font-mono);
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 500;
     cursor: pointer;
-    transition: transform 0.1s, opacity 0.3s;
-    text-align: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-width: 100px;
-}
-
-.calorie-buttons button:active {
-    transform: scale(0.95);
-}
-
-.add-btn {
-    background-color: var(--add-btn-bg);
-    color: var(--add-btn-color);
-}
-
-.subtract-btn {
-    background-color: var(--subtract-btn-bg);
-    color: var(--subtract-btn-color);
-}
-
-/* Firefox-specific button fixes */
-@-moz-document url-prefix() {
-    .calorie-buttons button {
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-    }
-}
-
-.dots {
-    display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    min-width: 110px;
+    position: relative;
+    overflow: hidden;
 }
 
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: var(--ring-bg);
-    transition: all 0.3s ease;
-}
-
-.dot.active {
-    background-color: var(--primary-color);
-    transform: scale(1.2);
-}
-
-.dot.active.surplus {
-    background-color: var(--add-btn-color);
-}
-
-.github-link {
+.calorie-buttons button::after {
+    content: '';
     position: absolute;
-    top: 10px;
-    right: 10px;
-    opacity: 0.7;
-    transition: opacity 0.3s;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.github-link:hover {
+.calorie-buttons button:active::after {
     opacity: 1;
 }
 
-/* Data management */
-.data-management {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
+.calorie-buttons button:active {
+    transform: scale(0.96);
 }
 
-.data-btn {
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+/* Eat button - Amber (adds calories) */
+.add-btn {
+    background: linear-gradient(135deg, var(--color-eat) 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
 }
 
-.data-btn:hover {
-    background-color: var(--accent-hover);
+.add-btn:hover {
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
     transform: translateY(-2px);
 }
 
-.data-btn:active {
-    transform: translateY(0);
+/* Burn button - Cyan (subtracts calories via exercise) */
+.subtract-btn {
+    background: linear-gradient(135deg, var(--color-burn) 0%, #0891b2 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
 }
 
-/* Modal for import/export messages */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    height: -webkit-fill-available;
-    height: -moz-available;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
+.subtract-btn:hover {
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+    transform: translateY(-2px);
 }
 
-.modal.active {
-    display: flex;
-}
+/* ============================================
+   VIEW TOGGLE
+   ============================================ */
 
-.modal-content {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 80%;
-    width: 100%;
-    max-height: 85%;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.modal-btn {
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.modal-btn.cancel {
-    background-color: #888;
-}
-
-/* View toggle styles */
 .view-toggle {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin: 15px 0;
+    gap: 4px;
+    margin: 16px 0;
+    padding: 4px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .view-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 20px;
-    background-color: var(--secondary-bg);
-    color: var(--text-color);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+}
+
+.view-btn:hover {
+    color: var(--text-primary);
 }
 
 .view-btn.active {
-    background-color: var(--primary-color);
-    color: white;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
 }
 
-/* View containers */
+/* ============================================
+   VIEWS
+   ============================================ */
+
 .view {
     display: none;
     width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .view.active {
     display: block;
 }
 
-#month-view {
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
 .view-heading {
     text-align: center;
-    margin-bottom: 15px;
-    color: var(--text-color);
-}
-
-/* Calendar styles */
-.calendar-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 20px;
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    transition: opacity 0.3s;
-}
-
-.calendar-container.active {
-    opacity: 1;
-    height: auto;
-    overflow: visible;
-}
-
-.calendar-week, .calendar-month {
-    display: grid;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-}
-
-.calendar-week {
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-}
-
-.calendar-month {
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-}
-
-.day-header {
-    font-size: 10px;
-    text-align: center;
-    color: var(--text-color);
-    opacity: 0.7;
-    font-weight: bold;
-    padding: 5px 0;
-}
-
-.calendar-day {
-    background-color: var(--secondary-bg);
-    border-radius: 8px;
-    padding: 5px;
-    text-align: center;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.calendar-day .day-label {
-    font-weight: bold;
-    margin-bottom: 2px;
-    font-size: 12px;
-}
-
-.calendar-day .calorie-value {
-    font-size: 10px;
-}
-
-.calendar-day.deficit {
-    background-color: rgba(76, 175, 80, 0.2);
-}
-
-.calendar-day.surplus {
-    background-color: rgba(244, 67, 54, 0.2);
-}
-
-.calendar-day.today {
-    border: 2px solid var(--primary-color);
-}
-
-.calendar-day.empty {
-    background-color: transparent;
-}
-
-@media (max-width: 480px) {
-    .calendar-week, .calendar-month {
-        max-width: 100%;
-        gap: 2px;
-    }
-
-    .calendar-day {
-        padding: 2px;
-    }
-
-    .calendar-day .day-label {
-        font-size: 10px;
-        margin-bottom: 1px;
-    }
-
-    .calendar-day .calorie-value {
-        font-size: 9px;
-    }
-
-    .day-header {
-        font-size: 9px;
-        padding: 3px 0;
-    }
-}
-
-.calendar-label {
-    min-width: 90px;
-    text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
-    color: var(--text-color);
-    opacity: 0.85;
-    margin: 0 8px;
-    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-/* Responsive layout for different views */
+/* Hide calorie display in week/month views */
 body.week-view-active .calorie-display,
 body.week-view-active .calorie-buttons,
 body.month-view-active .calorie-display,
@@ -713,140 +539,382 @@ body.month-view-active .calorie-buttons {
     display: none;
 }
 
-/* Make calendar views more prominent when active */
-body.week-view-active #week-view,
-body.month-view-active #month-view {
-    margin-top: 20px;
+/* ============================================
+   WEIGHT PROGRESS (Day View)
+   ============================================ */
+
+.weight-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bg-elevated);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 15px;
-    }
+.pounds-indicator {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
 
-    .calendar-container.active {
-        margin-top: 10px;
+#pounds-count {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--color-deficit);
+    transition: color 0.3s ease;
+}
+
+#pounds-count.surplus {
+    color: var(--color-surplus);
+}
+
+.pounds-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--ring-bg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dot.active {
+    background-color: var(--color-deficit);
+    transform: scale(1.2);
+    box-shadow: 0 0 12px var(--color-deficit-glow);
+}
+
+.dot.active.surplus {
+    background-color: var(--color-surplus);
+    box-shadow: 0 0 12px var(--color-surplus-glow);
+}
+
+.progress-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+#progress-to-pound {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.weight-progress.almost-complete .dots {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ============================================
+   CALENDAR STYLES
+   ============================================ */
+
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 16px;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.calendar-container.active {
+    opacity: 1;
+    height: auto;
+}
+
+.calendar-nav-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.calendar-nav-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 18px;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover:not(:disabled) {
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+}
+
+.calendar-nav-btn:disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.calendar-label {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 100px;
+    text-align: center;
+}
+
+.calendar-week,
+.calendar-month {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    max-width: 100%;
+}
+
+.day-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.calendar-day {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.calendar-day:hover:not(.empty) {
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.02);
+}
+
+.calendar-day .day-label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.calendar-day .calorie-value {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.calendar-day.deficit {
+    background: var(--color-deficit-soft);
+}
+
+.calendar-day.deficit .calorie-value {
+    color: var(--color-deficit);
+}
+
+.calendar-day.surplus {
+    background: var(--color-surplus-soft);
+}
+
+.calendar-day.surplus .calorie-value {
+    color: var(--color-surplus);
+}
+
+.calendar-day.today {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-soft);
+}
+
+.calendar-day.empty {
+    background: transparent;
+    cursor: default;
+}
+
+#month-view {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* ============================================
+   DATA MANAGEMENT
+   ============================================ */
+
+.data-management {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.data-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.data-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-elevated);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: modalSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
-/* Firefox-specific SVG fixes */
-@-moz-document url-prefix() {
-    .calorie-display {
-        padding: 20px 0;
-        min-height: 240px;
-    }
-
-    .progress-ring {
-        transform: scale(0.9);
-        margin: 10px auto;
-    }
-
-    .progress-ring svg {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-    }
-
-    .ring-progress {
-        transform: rotate(-90deg) translateZ(0);
-    }
-
-    /* Additional Firefox mobile fixes */
-    @media (max-width: 480px) {
-        .calorie-display {
-            padding: 25px 0;
-        }
-
-        .progress-ring {
-            transform: scale(0.85);
-        }
-    }
+.modal-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
 }
 
-@media (max-width: 480px) {
-    .progress-ring {
-        width: 200px;
-        height: 200px;
-    }
-
-    .calorie-display {
-        min-height: 220px;
-        margin: 10px 0 20px;
-    }
-
-    .ring {
-        width: 100%;
-        height: 100%;
-    }
+.modal-content p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-/* Safari-specific calendar fixes */
-@supports (-webkit-touch-callout: none) {
-    .view {
-        display: none;
-        width: 100%;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    }
-
-    .view.active {
-        display: block !important;
-        max-height: 70vh;
-        overflow-y: auto;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-    }
-
-    .calendar-container {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-    }
-
-    .calendar-container.active {
-        display: flex !important;
-        opacity: 1 !important;
-        height: auto !important;
-    }
-
-    #week-view, #month-view {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    }
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
 }
 
-/* Log button and modal styles */
-#log-btn {
-    color: #3498db;
+.modal-btn {
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
+.modal-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.modal-btn.cancel {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.modal-btn.cancel:hover {
+    background: var(--ring-bg);
+}
+
+/* Log Modal */
 .log-modal-content {
-    max-width: 90%;
+    max-width: 360px;
     max-height: 80vh;
-    position: relative;
 }
 
 .log-list-container {
-    max-height: 60vh;
+    max-height: 50vh;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 15px 0;
-    padding: 0 10px;
+    margin: 20px 0;
+    padding: 0 4px;
 }
 
 #log-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    list-style: none;
 }
 
 #log-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--ring-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 #log-list li:last-child {
@@ -854,219 +922,185 @@ body.month-view-active #month-view {
 }
 
 .log-entry-time {
-    color: var(--text-color);
-    opacity: 0.7;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
 .log-entry-amount {
-    font-weight: bold;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .log-entry-amount.positive {
-    color: var(--add-btn-color);
+    color: var(--color-eat);
 }
 
 .log-entry-amount.negative {
-    color: var(--primary-color);
-}
-
-.log-modal-content h3 {
-    margin-top: 0;
-    color: var(--text-color);
+    color: var(--color-burn);
 }
 
 .empty-log-message {
-    text-align: center;
-    padding: 20px;
-    color: var(--text-color);
-    opacity: 0.7;
-}
-
-.weight-progress {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin: 15px 0;
-    padding: 15px;
-    background-color: var(--secondary-bg);
-    border-radius: 15px;
-    width: 100%;
-}
-
-.pounds-indicator {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-}
-
-#pounds-count {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--text-color);
-    transition: color 0.3s ease;
-}
-
-.pounds-label {
+    padding: 32px 16px;
+    color: var(--text-muted);
     font-size: 14px;
-    color: var(--text-color);
-    opacity: 0.7;
 }
 
-.dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 5px 0;
-    width: 100%;
-    max-width: 200px;
-}
-
-.dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--ring-bg);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.dot.active {
-    background-color: var(--primary-color);
-    transform: scale(1.2);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.dot.active.surplus {
-    background-color: var(--add-btn-color);
-}
-
-.progress-label {
+/* Edit Calories Modal */
+#edit-calories-date {
+    font-family: var(--font-mono);
     font-size: 14px;
-    color: var(--text-color);
-    opacity: 0.7;
+    color: var(--text-secondary);
+    margin: 8px 0 16px;
+}
+
+.edit-calories-input-container {
+    margin: 20px 0;
+}
+
+.edit-calories-input-container label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+#edit-calories-input {
+    width: 100%;
+    max-width: 180px;
+    padding: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 20px;
     text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
 }
 
-#progress-to-pound {
-    font-weight: bold;
-    opacity: 1;
+#edit-calories-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-soft);
 }
 
-.weight-progress.almost-complete .dots {
-    animation: pulse 1.5s infinite;
-}
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* Responsive adjustments */
 @media (max-width: 480px) {
-    .weight-progress {
-        margin: 12px 0;
-        padding: 12px;
-        gap: 10px;
+    .container {
+        padding: 16px;
     }
 
-    .dots {
-        max-width: 180px;
-        gap: 6px;
+    .header {
+        margin-bottom: 24px;
     }
 
-    .dot {
-        width: 8px;
-        height: 8px;
+    .bmr-section {
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+
+    .bmr-value.current {
+        font-size: 24px;
+    }
+
+    .progress-ring {
+        width: 200px;
+        height: 200px;
+    }
+
+    #calorie-value {
+        font-size: 40px;
+    }
+
+    .calorie-buttons {
+        gap: 12px;
+    }
+
+    .calorie-buttons button {
+        padding: 14px 24px;
+        font-size: 16px;
+        min-width: 100px;
+    }
+
+    .calendar-day {
+        border-radius: 10px;
+        padding: 6px 2px;
+    }
+
+    .calendar-day .day-label {
+        font-size: 11px;
+    }
+
+    .calendar-day .calorie-value {
+        font-size: 9px;
     }
 }
 
-/* Fix for notched phones */
+/* Safe area for notched phones */
 @supports (padding: max(0px)) {
     .container {
         padding-left: max(20px, env(safe-area-inset-left));
         padding-right: max(20px, env(safe-area-inset-right));
         padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
+}
 
-    @media (max-width: 480px) {
-        .container {
-            padding-left: max(15px, env(safe-area-inset-left));
-            padding-right: max(15px, env(safe-area-inset-right));
-            padding-bottom: max(15px, env(safe-area-inset-bottom));
-        }
+/* Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .ring-progress {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        -webkit-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+    }
+
+    .modal {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .view.active {
+        display: block !important;
+    }
+
+    .calendar-container.active {
+        display: flex !important;
+        opacity: 1 !important;
+        height: auto !important;
     }
 }
 
-.calendar-nav-btn {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--primary-color);
-    cursor: pointer;
-    margin: 0 10px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    transition: background 0.2s;
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+    .container {
+        min-height: calc(100vh - 40px);
+    }
+
+    .progress-ring {
+        transform: scale(0.95);
+    }
+
+    .ring-progress {
+        transform: rotate(-90deg) translateZ(0);
+    }
 }
 
-.calendar-nav-btn:active {
-    background: var(--secondary-bg);
-}
-
-.calendar-nav-btn:disabled {
-    color: #bbb;
-    cursor: not-allowed;
-    background: none;
-}
-
-.calendar-nav-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 8px;
-    gap: 10px;
-}
-
-/* Edit Calories Modal styles */
-#edit-calories-date {
-    margin: 10px 0;
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-.edit-calories-input-container {
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-.edit-calories-input-container label {
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: var(--text-color);
-    opacity: 0.8;
-}
-
-#edit-calories-input {
-    width: 100%;
-    max-width: 200px;
-    padding: 10px;
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 5px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-size: 16px;
-    text-align: center;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-#edit-calories-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

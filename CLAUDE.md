@@ -23,14 +23,17 @@ bundle exec jekyll serve -wIlo --drafts
 ```
 Requires Ruby 3.0.0 and Bundler.
 
-### Calorie Counter App
-Open `cc/index.html` directly in a browser - no server required. Run tests by opening `cc/tests.html` (uses Jasmine).
+### Calorie Counter App (`cc/`)
+Open `cc/index.html` directly in a browser - no server required.
+
+Run tests by opening `cc/tests.html` in a browser (Jasmine test runner). Tests use `testClock` to mock time for day rollover and calendar logic.
 
 ## Architecture
 
 ### Jekyll Structure
-- `_config.yml` - Site configuration (title, author, theme settings)
-- `_posts/` - Blog posts in markdown format
+- `_config.yml` - Site configuration (title, author, theme settings). Restart server after changes.
+- `_posts/` - Published blog posts in markdown
+- `_drafts/` - Draft posts (visible with `--drafts` flag)
 - `_layouts/` - Page templates (default, post, page, index)
 - `_includes/` - Reusable HTML components (header, footer, head)
 - `_sass/` - SCSS stylesheets with override files (`theme_override.scss`, `main_override.scss`)

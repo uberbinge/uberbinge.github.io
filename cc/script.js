@@ -638,6 +638,10 @@ function adjustCalories(amount) {
         timestamp: Date.now()
     });
 
+    // Add bump animation
+    calorieValueEl.classList.add('bump');
+    setTimeout(() => calorieValueEl.classList.remove('bump'), 150);
+
     updateCalorieDisplay();
     updateProgressRing();
     updateDotsDisplay();
@@ -666,11 +670,16 @@ function updateCalorieDisplay() {
         maximumFractionDigits: 1
     });
 
-    // Change color based on deficit or surplus
-    if (netCalories < 0) {
-        calorieValueEl.style.color = 'var(--primary-color)'; // Green for deficit
+    // Update surplus/deficit class for styling
+    const ring = document.querySelector('.ring');
+    if (netCalories >= 0) {
+        calorieValueEl.classList.add('surplus');
+        ringProgress.classList.add('surplus');
+        ring.classList.add('surplus-active');
     } else {
-        calorieValueEl.style.color = 'var(--add-btn-color)'; // Red for surplus
+        calorieValueEl.classList.remove('surplus');
+        ringProgress.classList.remove('surplus');
+        ring.classList.remove('surplus-active');
     }
 }
 
@@ -678,14 +687,7 @@ function updateProgressRing() {
     // Keep the circle always full
     ringProgress.style.strokeDashoffset = 0;
     ringProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
-
-    // Set the color based on deficit or surplus
-    const netCalories = getNetCalories();
-    if (netCalories < 0) {
-        ringProgress.style.stroke = 'var(--primary-color)'; // Green for deficit
-    } else {
-        ringProgress.style.stroke = 'var(--add-btn-color)'; // Red for surplus
-    }
+    // Color is now handled by CSS classes (surplus class)
 }
 
 function updateDotsDisplay() {
@@ -701,9 +703,9 @@ function updateDotsDisplay() {
     const poundsCount = document.getElementById('pounds-count');
     poundsCount.textContent = totalPounds;
     if (totalCalories > 0) {
-        poundsCount.style.color = 'var(--add-btn-color)'; // Red for weight gain
+        poundsCount.classList.add('surplus');
     } else {
-        poundsCount.style.color = 'var(--primary-color)'; // Green for weight loss
+        poundsCount.classList.remove('surplus');
     }
 
     // Update progress percentage
