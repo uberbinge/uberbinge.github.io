@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ensure BMR values are displayed on load
     updateBMRDisplay();
     // Ensure BMR slider reflects the state.bmr value on load
-    bmrSlider.value = state.bmr;
+    document.getElementById('bmr-slider').value = state.bmr;
 
     // Add week nav button listeners
     document.getElementById('week-prev-btn').addEventListener('click', () => handleWeekNav(-1));
