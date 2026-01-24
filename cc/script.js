@@ -806,32 +806,88 @@ function updateDotsDisplay() {
     // Update progress percentage
     document.getElementById('progress-to-pound').textContent = progressToNextPound;
 
-    // Update dots to show progress to next pound
-    const dots = document.querySelectorAll('.dot');
-    const dotsToFill = Math.ceil((progressToNextPound / 100) * dots.length);
+    // Update sparkline
+    updateSparkline();
+}
 
-    dots.forEach((dot, index) => {
-        // First, remove any existing classes
-        dot.classList.remove('active', 'surplus');
+function updateSparkline() {
+    const svg = document.getElementById('sparkline');
+    if (!svg) return;
 
-        // Fill dots based on progress to next pound
-        if (index < dotsToFill) {
-            dot.classList.add('active');
+    // Get last 7 days of data
+    const days = [];
+    const today = new Date();
 
-            // If it's a surplus (weight gain), make it red
-            if (totalCalories > 0) {
-                dot.classList.add('surplus');
-            }
-        }
-    });
-
-    // Add animation class if all dots are filled
-    const weightProgress = document.querySelector('.weight-progress');
-    if (progressToNextPound >= 95) {
-        weightProgress.classList.add('almost-complete');
-    } else {
-        weightProgress.classList.remove('almost-complete');
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const dateKey = formatDateKey(date);
+        const netCalories = calculateNetCaloriesForDate(dateKey);
+        days.push({ date, dateKey, netCalories });
     }
+
+    // Find min/max for scaling
+    const values = days.map(d => d.netCalories);
+    const minVal = Math.min(...values, 0);
+    const maxVal = Math.max(...values, 0);
+    const range = Math.max(maxVal - minVal, 100); // Minimum range of 100
+
+    // SVG dimensions
+    const width = 200;
+    const height = 60;
+    const padding = 8;
+    const chartWidth = width - padding * 2;
+    const chartHeight = height - padding * 2;
+
+    // Scale function
+    const scaleY = (val) => {
+        const normalized = (val - minVal) / range;
+        return height - padding - (normalized * chartHeight);
+    };
+    const scaleX = (i) => padding + (i / 6) * chartWidth;
+
+    // Build path
+    const points = days.map((d, i) => ({
+        x: scaleX(i),
+        y: scaleY(d.netCalories),
+        netCalories: d.netCalories
+    }));
+
+    // Create smooth curve path
+    let pathD = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+        const prev = points[i - 1];
+        const curr = points[i];
+        const cpx = (prev.x + curr.x) / 2;
+        pathD += ` C ${cpx} ${prev.y}, ${cpx} ${curr.y}, ${curr.x} ${curr.y}`;
+    }
+
+    // Create gradient area path (for fill)
+    const zeroY = scaleY(0);
+    let areaD = pathD + ` L ${points[points.length - 1].x} ${zeroY} L ${points[0].x} ${zeroY} Z`;
+
+    // Build SVG content
+    svg.innerHTML = `
+        <defs>
+            <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color: var(--color-deficit); stop-opacity: 0.3"/>
+                <stop offset="100%" style="stop-color: var(--color-deficit); stop-opacity: 0.05"/>
+            </linearGradient>
+        </defs>
+        <!-- Zero line -->
+        <line x1="${padding}" y1="${zeroY}" x2="${width - padding}" y2="${zeroY}"
+              stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+        <!-- Area fill -->
+        <path d="${areaD}" fill="url(#sparkline-gradient)"/>
+        <!-- Line -->
+        <path d="${pathD}" fill="none" stroke="var(--color-deficit)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Points -->
+        ${points.map((p, i) => `
+            <circle cx="${p.x}" cy="${p.y}" r="${i === points.length - 1 ? 4 : 3}"
+                    fill="${p.netCalories > 0 ? 'var(--color-surplus)' : 'var(--color-deficit)'}"
+                    ${i === points.length - 1 ? 'stroke="var(--bg-surface)" stroke-width="2"' : ''}/>
+        `).join('')}
+    `;
 }
 
 function updateCalendarViews() {
