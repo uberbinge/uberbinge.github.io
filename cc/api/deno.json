@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-env --allow-read --unstable-kv --watch main.ts",
+    "start": "deno run --allow-net --allow-env --allow-read --unstable-kv main.ts"
+  },
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4"
+  },
+  "deploy": {
+    "project": "0411a73c-29e8-422b-9b63-fae217601b48",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.ts"
+  }
+}

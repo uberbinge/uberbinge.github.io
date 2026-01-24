@@ -14,6 +14,19 @@
         <div class="header">
             <div class="time-display">Time elapsed: <span id="time-elapsed">00h 00m 00s</span></div>
             <div class="controls">
+                <div id="sync-container" class="sync-container">
+                    <div id="sync-indicator" class="sync-indicator" onclick="manualSync()">
+                        <span class="sync-dot"></span>
+                    </div>
+                    <button id="device-id-btn" class="device-id-btn" onclick="copyDeviceId()" title="Click to copy device ID">
+                        <span id="device-id-display">loading...</span>
+                    </button>
+                    <button id="change-device-btn" class="change-device-btn" onclick="showChangeDeviceIdDialog()" aria-label="Change device ID">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                        </svg>
+                    </button>
+                </div>
                 <button id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
                 <button id="github-link" aria-label="View source code on GitHub">
                     <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
@@ -146,6 +159,22 @@
                 <div class="modal-buttons">
                     <button id="edit-calories-save" class="modal-btn">Save</button>
                     <button id="edit-calories-cancel" class="modal-btn cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device ID Modal -->
+        <div id="device-id-modal" class="modal">
+            <div class="modal-content">
+                <h3>Sync with Another Device</h3>
+                <p>Enter a device ID to sync data from another device:</p>
+                <div class="edit-calories-input-container">
+                    <label for="new-device-id-input">Device ID:</label>
+                    <input type="text" id="new-device-id-input" placeholder="Paste device ID here">
+                </div>
+                <div class="modal-buttons">
+                    <button onclick="handleDeviceIdChange()" class="modal-btn">Sync</button>
+                    <button onclick="closeDeviceIdModal()" class="modal-btn cancel">Cancel</button>
                 </div>
             </div>
         </div>

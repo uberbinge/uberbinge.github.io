@@ -209,6 +209,114 @@ body {
 }
 
 /* ============================================
+   SYNC SECTION
+   ============================================ */
+
+.sync-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.device-id-btn {
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.device-id-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+}
+
+.change-device-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.change-device-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--color-accent);
+}
+
+.change-device-btn svg {
+    stroke: currentColor;
+}
+
+/* Sync indicator */
+.sync-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.sync-indicator:hover {
+    background-color: var(--bg-secondary);
+}
+
+.sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    transition: all 0.3s ease;
+}
+
+.sync-indicator.idle .sync-dot {
+    background-color: var(--text-muted);
+}
+
+.sync-indicator.synced .sync-dot {
+    background-color: var(--color-deficit);
+}
+
+.sync-indicator.syncing .sync-dot {
+    background-color: var(--color-accent);
+    animation: syncPulse 1s ease-in-out infinite;
+}
+
+.sync-indicator.error .sync-dot {
+    background-color: var(--color-surplus);
+}
+
+.sync-indicator.offline .sync-dot {
+    background-color: var(--text-muted);
+    opacity: 0.5;
+}
+
+@keyframes syncPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.7;
+    }
+}
+
+/* ============================================
    BMR SECTION
    ============================================ */
 
@@ -997,22 +1105,29 @@ body.month-view-active .calorie-buttons {
     margin-bottom: 10px;
 }
 
-#edit-calories-input {
+#edit-calories-input,
+#new-device-id-input {
     width: 100%;
-    max-width: 180px;
+    max-width: 280px;
     padding: 14px;
     border: 2px solid var(--border-color);
     border-radius: 12px;
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 20px;
+    font-size: 14px;
     text-align: center;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     -webkit-appearance: none;
 }
 
-#edit-calories-input:focus {
+#edit-calories-input {
+    font-size: 20px;
+    max-width: 180px;
+}
+
+#edit-calories-input:focus,
+#new-device-id-input:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px var(--color-accent-soft);

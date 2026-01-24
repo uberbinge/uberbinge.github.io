@@ -1,3 +1,71 @@
+// API URL for cloud sync - set to your Deno Deploy URL
+const API_URL = 'https://ubercc.deno.dev';
+
+// Cloud sync state
+let syncTimeout = null;
+let syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
+
+// Device ID management
+function getDeviceId() {
+    let id = localStorage.getItem('ccDeviceId');
+    if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem('ccDeviceId', id);
+    }
+    return id;
+}
+
+function setDeviceId(newId) {
+    if (newId && newId.length >= 10) {
+        localStorage.setItem('ccDeviceId', newId);
+        return true;
+    }
+    return false;
+}
+
+// Cloud sync functions
+async function loadFromCloud() {
+    if (!API_URL) return null;
+
+    try {
+        const res = await fetch(`${API_URL}/state/${getDeviceId()}`);
+        if (res.ok) {
+            const data = await res.json();
+            return data.state;
+        }
+    } catch (e) {
+        console.warn('Cloud load failed:', e);
+    }
+    return null;
+}
+
+async function saveToCloud() {
+    if (!API_URL) return;
+
+    try {
+        await fetch(`${API_URL}/state/${getDeviceId()}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state)
+        });
+        syncStatus = 'synced';
+        updateSyncIndicator();
+    } catch (e) {
+        console.warn('Cloud save failed:', e);
+        syncStatus = navigator.onLine ? 'error' : 'offline';
+        updateSyncIndicator();
+    }
+}
+
+function debouncedCloudSync() {
+    if (!API_URL) return;
+
+    clearTimeout(syncTimeout);
+    syncStatus = 'syncing';
+    updateSyncIndicator();
+    syncTimeout = setTimeout(saveToCloud, 2000);
+}
+
 // Initialize state
 let state = loadState() || {
     dayStart: getDayStartTime(),
@@ -17,7 +85,18 @@ let currentWeekOffset = 0; // 0 = current week, -1 = previous week, etc.
 let currentMonthOffset = 0; // 0 = current month, -1 = previous month, etc.
 
 // Initialize the app when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Try to load from cloud first
+    const cloudState = await loadFromCloud();
+    if (cloudState) {
+        state = cloudState;
+        // Ensure required fields exist
+        state.dailyData = state.dailyData || {};
+        state.calorieLog = state.calorieLog || [];
+        localStorage.setItem('calorieCounterState', JSON.stringify(state));
+        syncStatus = 'synced';
+    }
+
     // Process any missed days
     processMissedDays();
 
@@ -51,6 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('month-prev-btn').addEventListener('click', () => handleMonthNav(-1));
     document.getElementById('month-next-btn').addEventListener('click', () => handleMonthNav(1));
     addSwipeListenersMonthView();
+
+    // Update sync UI
+    updateSyncIndicator();
+    updateDeviceIdDisplay();
 });
 
 // Set up event listeners
@@ -969,7 +1052,11 @@ function saveState() {
             return;
         }
 
+        // Save to localStorage (immediate)
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
+
+        // Queue cloud sync (debounced)
+        debouncedCloudSync();
     } catch (e) {
         console.error('Error saving state:', e);
         // Try to clear storage if we hit quota or other issues
@@ -1232,3 +1319,161 @@ function handleMonthNav(direction) {
         updateMonthCalendar();
     }
 }
+
+// ============================================
+// SYNC UI FUNCTIONS
+// ============================================
+
+// Update sync status indicator
+function updateSyncIndicator() {
+    const syncIndicator = document.getElementById('sync-indicator');
+    if (!syncIndicator) return;
+
+    syncIndicator.className = 'sync-indicator';
+    syncIndicator.style.display = 'flex';
+
+    switch (syncStatus) {
+        case 'syncing':
+            syncIndicator.classList.add('syncing');
+            syncIndicator.title = 'Syncing...';
+            break;
+        case 'error':
+            syncIndicator.classList.add('error');
+            syncIndicator.title = 'Sync error - click to retry';
+            break;
+        case 'offline':
+            syncIndicator.classList.add('offline');
+            syncIndicator.title = 'Offline - will sync when online';
+            break;
+        case 'synced':
+            syncIndicator.classList.add('synced');
+            syncIndicator.title = 'Synced to cloud';
+            break;
+        default:
+            syncIndicator.classList.add('idle');
+            syncIndicator.title = 'Not synced yet';
+    }
+}
+
+// Update device ID display
+function updateDeviceIdDisplay() {
+    const deviceIdEl = document.getElementById('device-id-display');
+    if (deviceIdEl) {
+        const id = getDeviceId();
+        deviceIdEl.textContent = id.substring(0, 8) + '...';
+        deviceIdEl.title = id;
+    }
+}
+
+// Copy device ID to clipboard
+function copyDeviceId() {
+    const id = getDeviceId();
+    navigator.clipboard.writeText(id).then(() => {
+        showMessage('Device ID copied to clipboard!');
+    }).catch(() => {
+        showMessage('Failed to copy. ID: ' + id);
+    });
+}
+
+// Show device ID change dialog using the dedicated modal
+function showChangeDeviceIdDialog() {
+    const modal = document.getElementById('device-id-modal');
+    const input = document.getElementById('new-device-id-input');
+
+    if (!modal || !input) return;
+
+    input.value = '';
+    modal.classList.add('active');
+
+    setTimeout(() => input.focus(), 100);
+}
+
+// Handle device ID change from modal
+async function handleDeviceIdChange() {
+    const modal = document.getElementById('device-id-modal');
+    const input = document.getElementById('new-device-id-input');
+
+    const newId = input?.value?.trim();
+
+    if (newId && setDeviceId(newId)) {
+        // Try to load from cloud with new ID
+        const cloudState = await loadFromCloud();
+        if (cloudState) {
+            state = cloudState;
+            state.dailyData = state.dailyData || {};
+            state.calorieLog = state.calorieLog || [];
+            localStorage.setItem('calorieCounterState', JSON.stringify(state));
+
+            // Update UI
+            updateCalorieDisplay();
+            updateDotsDisplay();
+            updateCalendarViews();
+            updateBMRDisplay();
+            applyTheme();
+            bmrSlider.value = state.bmr;
+
+            showMessage('Synced successfully with new device ID!');
+        } else {
+            showMessage('No data found for this device ID. Your local data will be synced to this ID.');
+            debouncedCloudSync();
+        }
+        updateDeviceIdDisplay();
+    } else {
+        showMessage('Invalid device ID. Must be at least 10 characters.');
+    }
+
+    modal.classList.remove('active');
+}
+
+// Close device ID modal
+function closeDeviceIdModal() {
+    const modal = document.getElementById('device-id-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+// Manually trigger sync
+async function manualSync() {
+    if (syncStatus === 'syncing') return;
+
+    syncStatus = 'syncing';
+    updateSyncIndicator();
+
+    try {
+        // First save current state
+        await saveToCloud();
+
+        // Then try to load latest
+        const cloudState = await loadFromCloud();
+        if (cloudState && cloudState.lastUpdated > state.lastUpdated) {
+            state = cloudState;
+            state.dailyData = state.dailyData || {};
+            state.calorieLog = state.calorieLog || [];
+            localStorage.setItem('calorieCounterState', JSON.stringify(state));
+
+            updateCalorieDisplay();
+            updateDotsDisplay();
+            updateCalendarViews();
+            updateBMRDisplay();
+            applyTheme();
+            bmrSlider.value = state.bmr;
+        }
+
+        syncStatus = 'synced';
+    } catch (e) {
+        syncStatus = navigator.onLine ? 'error' : 'offline';
+    }
+
+    updateSyncIndicator();
+}
+
+// Listen for online/offline events
+window.addEventListener('online', () => {
+    if (syncStatus === 'offline') {
+        debouncedCloudSync();
+    }
+});
+
+window.addEventListener('offline', () => {
+    syncStatus = 'offline';
+    updateSyncIndicator();
+});
