@@ -284,8 +284,8 @@ function importData(importedData) {
         // Update the state with imported data
         state = importedData.state;
 
-        // Save to localStorage
-        saveState();
+        // Save to localStorage and sync to cloud
+        saveState(true);
 
         // Update the UI
         updateCalorieDisplay();
@@ -523,8 +523,8 @@ function processMissedDays() {
     state.dayStart = currentDayStart;
     state.lastUpdated = now;
 
-    // Save the updated state
-    saveState();
+    // Save the updated state and sync
+    saveState(true);
 }
 
 function checkDayReset() {
@@ -552,7 +552,7 @@ function checkDayReset() {
         state.manualCalories = 0;
         state.calorieLog = []; // Reset log for the new day
         state.lastUpdated = Date.now();
-        saveState();
+        saveState(true);
 
         // Update the dots display
         updateDotsDisplay();
@@ -573,7 +573,7 @@ function toggleTheme() {
     }
 
     applyTheme();
-    saveState();
+    saveState(true);
 }
 
 function switchView(viewType) {
@@ -699,8 +699,8 @@ function calculateNetCaloriesForDate(dateKey) {
             // Recalculate netCalories (full day of BMR burn)
             dayData.netCalories = recalculatedManualCalories - dayData.bmr;
 
-            // Save the updated state
-            saveState();
+            // Save the updated state and sync
+            saveState(true);
         }
 
         return dayData.netCalories;
@@ -713,7 +713,7 @@ function calculateNetCaloriesForDate(dateKey) {
 function updateBMR() {
     state.bmr = parseInt(bmrSlider.value);
     updateBMRDisplay();
-    saveState();
+    saveState(true);
 }
 
 function updateBMRDisplay() {
@@ -753,7 +753,7 @@ function adjustCalories(amount) {
     updateProgressRing();
     updateDotsDisplay();
     state.lastUpdated = Date.now();
-    saveState();
+    saveState(true);
 }
 
 function getNetCalories() {
@@ -1017,7 +1017,7 @@ function resetTimer() {
     // Reset the timer to the current time
     state.dayStart = getDayStartTime();
     state.lastUpdated = Date.now();
-    saveState();
+    saveState(true);
 }
 
 function resetCounter() {
@@ -1030,7 +1030,7 @@ function resetCounter() {
             state.calorieLog = []; // Clear the log for the current day
             state.dayStart = getDayStartTime();
             state.lastUpdated = Date.now();
-            saveState();
+            saveState(true);
             updateCalorieDisplay();
             updateProgressRing();
             updateDotsDisplay();
@@ -1068,7 +1068,7 @@ function loadState() {
     return null;
 }
 
-function saveState() {
+function saveState(syncToCloud = false) {
     try {
         // Validate state before saving
         if (!state || !state.dayStart || !state.bmr) {
@@ -1079,8 +1079,10 @@ function saveState() {
         // Save to localStorage (immediate)
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
 
-        // Queue cloud sync (debounced)
-        debouncedCloudSync();
+        // Queue cloud sync (debounced) - only for meaningful user changes
+        if (syncToCloud) {
+            debouncedCloudSync();
+        }
     } catch (e) {
         console.error('Error saving state:', e);
         // Try to clear storage if we hit quota or other issues
@@ -1265,8 +1267,8 @@ function saveEditedCalories(dateKey, manualCalories) {
         state.totalCalorieHistory += newNetCalories;
     }
 
-    // Save the updated state
-    saveState();
+    // Save the updated state and sync
+    saveState(true);
 
     // Update the UI
     updateCalorieDisplay();
