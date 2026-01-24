@@ -43,12 +43,18 @@ async function saveToCloud() {
     if (!API_URL) return;
 
     try {
-        await fetch(`${API_URL}/state/${getDeviceId()}`, {
+        const response = await fetch(`${API_URL}/state/${getDeviceId()}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(state)
         });
-        syncStatus = 'synced';
+
+        if (response.ok) {
+            syncStatus = 'synced';
+        } else {
+            console.warn('Cloud save failed:', response.status);
+            syncStatus = 'error';
+        }
         updateSyncIndicator();
     } catch (e) {
         console.warn('Cloud save failed:', e);
