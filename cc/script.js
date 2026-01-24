@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Ensure required fields exist
         state.dailyData = state.dailyData || {};
         state.calorieLog = state.calorieLog || [];
+        state.totalCalorieHistory = state.totalCalorieHistory ?? 0;
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
         syncStatus = 'synced';
     }
@@ -1033,8 +1034,10 @@ function loadState() {
                 return null;
             }
 
-            // Ensure dailyData exists
+            // Ensure required fields exist
             parsedState.dailyData = parsedState.dailyData || {};
+            parsedState.calorieLog = parsedState.calorieLog || [];
+            parsedState.totalCalorieHistory = parsedState.totalCalorieHistory ?? 0;
 
             return parsedState;
         }
@@ -1410,6 +1413,7 @@ async function handleDeviceIdChange() {
             state = cloudState;
             state.dailyData = state.dailyData || {};
             state.calorieLog = state.calorieLog || [];
+            state.totalCalorieHistory = state.totalCalorieHistory ?? 0;
             localStorage.setItem('calorieCounterState', JSON.stringify(state));
 
             // Update UI
@@ -1456,6 +1460,7 @@ async function manualSync() {
             state = cloudState;
             state.dailyData = state.dailyData || {};
             state.calorieLog = state.calorieLog || [];
+            state.totalCalorieHistory = state.totalCalorieHistory ?? 0;
             localStorage.setItem('calorieCounterState', JSON.stringify(state));
 
             updateCalorieDisplay();
