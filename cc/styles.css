@@ -1,6 +1,8 @@
 /* ============================================
-   CALORIE COUNTER - Refined Minimalist Design
+   CALORIE COUNTER - Precision Instrument Design
    ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 * {
     margin: 0;
@@ -8,92 +10,107 @@
     box-sizing: border-box;
 }
 
-/* Typography */
+/* Typography & Design Tokens */
 :root {
-    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'DM Mono', 'SF Mono', 'Menlo', monospace;
+    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
-    /* Light theme - Refined palette */
-    --bg-primary: #fafafa;
-    --bg-secondary: #f0f0f0;
+    /* Light theme - Warm & Refined */
+    --bg-base: #f8f6f3;
+    --bg-surface: #ffffff;
     --bg-elevated: #ffffff;
-    --text-primary: #1a1a2e;
-    --text-secondary: #64648c;
-    --text-muted: #9999b3;
+    --bg-inset: #f0ede8;
+    --text-primary: #1c1917;
+    --text-secondary: #57534e;
+    --text-muted: #a8a29e;
 
-    /* Semantic colors */
-    --color-deficit: #0d9488;      /* Teal - healthy/good */
-    --color-deficit-soft: #ccfbf1;
-    --color-deficit-glow: rgba(13, 148, 136, 0.15);
+    /* Accent - Deep Teal (Deficit/Good) */
+    --color-deficit: #0f766e;
+    --color-deficit-soft: rgba(15, 118, 110, 0.12);
+    --color-deficit-glow: rgba(15, 118, 110, 0.25);
 
-    --color-surplus: #e11d48;      /* Rose - warning */
-    --color-surplus-soft: #ffe4e6;
-    --color-surplus-glow: rgba(225, 29, 72, 0.15);
+    /* Warning - Warm Coral (Surplus/Caution) */
+    --color-surplus: #dc2626;
+    --color-surplus-soft: rgba(220, 38, 38, 0.1);
+    --color-surplus-glow: rgba(220, 38, 38, 0.2);
 
-    /* Action colors */
-    --color-eat: #f59e0b;          /* Amber - food/energy */
-    --color-eat-soft: #fef3c7;
-    --color-burn: #06b6d4;         /* Cyan - exercise/burn */
-    --color-burn-soft: #cffafe;
+    /* Action Colors */
+    --color-add: #ea580c;
+    --color-add-gradient: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    --color-subtract: #0891b2;
+    --color-subtract-gradient: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
 
-    /* UI colors */
-    --color-accent: #6366f1;       /* Indigo */
-    --color-accent-soft: #e0e7ff;
-    --ring-bg: #e5e5e5;
-    --border-color: rgba(0, 0, 0, 0.06);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    /* UI */
+    --color-accent: #6366f1;
+    --color-accent-soft: rgba(99, 102, 241, 0.12);
+    --ring-track: #e7e5e4;
+    --border: rgba(0, 0, 0, 0.06);
+    --border-strong: rgba(0, 0, 0, 0.1);
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --shadow-ring: 0 0 0 1px var(--border);
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* Animation */
+    --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Dark theme */
 .dark-mode {
-    --bg-primary: #0f0f17;
-    --bg-secondary: #1a1a28;
-    --bg-elevated: #24243a;
-    --text-primary: #f0f0f5;
-    --text-secondary: #a0a0b8;
-    --text-muted: #6a6a88;
+    --bg-base: #0c0a09;
+    --bg-surface: #1c1917;
+    --bg-elevated: #292524;
+    --bg-inset: #0c0a09;
+    --text-primary: #fafaf9;
+    --text-secondary: #a8a29e;
+    --text-muted: #78716c;
 
-    --color-deficit-soft: rgba(13, 148, 136, 0.2);
-    --color-surplus-soft: rgba(225, 29, 72, 0.2);
-    --color-eat-soft: rgba(245, 158, 11, 0.2);
-    --color-burn-soft: rgba(6, 182, 212, 0.2);
-    --color-accent-soft: rgba(99, 102, 241, 0.2);
+    --color-deficit-soft: rgba(20, 184, 166, 0.15);
+    --color-deficit-glow: rgba(20, 184, 166, 0.3);
+    --color-surplus-soft: rgba(248, 113, 113, 0.15);
+    --color-surplus-glow: rgba(248, 113, 113, 0.25);
+    --color-accent-soft: rgba(129, 140, 248, 0.15);
 
-    --ring-bg: #2a2a40;
-    --border-color: rgba(255, 255, 255, 0.06);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --ring-track: #292524;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.1);
 }
 
-/* Auto theme - follows OS preference */
+/* Auto theme */
 @media (prefers-color-scheme: dark) {
     body.auto-theme {
-        --bg-primary: #0f0f17;
-        --bg-secondary: #1a1a28;
-        --bg-elevated: #24243a;
-        --text-primary: #f0f0f5;
-        --text-secondary: #a0a0b8;
-        --text-muted: #6a6a88;
+        --bg-base: #0c0a09;
+        --bg-surface: #1c1917;
+        --bg-elevated: #292524;
+        --bg-inset: #0c0a09;
+        --text-primary: #fafaf9;
+        --text-secondary: #a8a29e;
+        --text-muted: #78716c;
 
-        --color-deficit-soft: rgba(13, 148, 136, 0.2);
-        --color-surplus-soft: rgba(225, 29, 72, 0.2);
-        --color-eat-soft: rgba(245, 158, 11, 0.2);
-        --color-burn-soft: rgba(6, 182, 212, 0.2);
-        --color-accent-soft: rgba(99, 102, 241, 0.2);
+        --color-deficit-soft: rgba(20, 184, 166, 0.15);
+        --color-deficit-glow: rgba(20, 184, 166, 0.3);
+        --color-surplus-soft: rgba(248, 113, 113, 0.15);
+        --color-surplus-glow: rgba(248, 113, 113, 0.25);
+        --color-accent-soft: rgba(129, 140, 248, 0.15);
 
-        --ring-bg: #2a2a40;
-        --border-color: rgba(255, 255, 255, 0.06);
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --ring-track: #292524;
+        --border: rgba(255, 255, 255, 0.06);
+        --border-strong: rgba(255, 255, 255, 0.1);
     }
 }
 
 /* ============================================
-   BASE STYLES
+   BASE
    ============================================ */
 
 html {
@@ -102,16 +119,50 @@ html {
 }
 
 body {
-    font-family: var(--font-body);
-    background-color: var(--bg-primary);
+    font-family: var(--font-display);
+    background: var(--bg-base);
     color: var(--text-primary);
     min-height: 100vh;
     min-height: -webkit-fill-available;
     display: flex;
     justify-content: center;
-    transition: background-color 0.4s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.2s ease;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle noise texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.02;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.dark-mode body::before,
+body.auto-theme::before {
+    opacity: 0.03;
+}
+
+@media (prefers-color-scheme: dark) {
+    body.auto-theme::before {
+        opacity: 0.03;
+    }
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
 }
 
 /* Firefox fixes */
@@ -126,16 +177,6 @@ body {
     }
 }
 
-.container {
-    width: 100%;
-    max-width: 400px;
-    padding: 24px 20px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-}
-
 /* ============================================
    HEADER
    ============================================ */
@@ -144,64 +185,67 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    padding-top: 12px;
+    margin-bottom: 24px;
+    padding: 8px 0;
 }
 
 .time-display {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text-muted);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
 }
 
 .controls {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 6px;
 }
 
 .controls button {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     padding: 8px 12px;
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
+    transition: all 0.15s var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: var(--shadow-xs);
 }
 
 .controls button:hover {
-    background-color: var(--bg-elevated);
-    box-shadow: var(--shadow-sm);
+    background: var(--bg-elevated);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
     transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .controls button:active {
     transform: translateY(0);
-    box-shadow: none;
+    box-shadow: var(--shadow-xs);
 }
 
-#reset-btn {
-    color: var(--color-accent);
-}
-
+#reset-btn,
 #log-btn {
     color: var(--color-accent);
 }
 
 #github-link {
-    padding: 8px 10px;
+    padding: 8px;
 }
 
 .github-icon {
-    fill: var(--text-secondary);
-    transition: fill 0.2s ease;
+    fill: var(--text-muted);
+    transition: fill 0.15s ease;
 }
 
 #github-link:hover .github-icon {
@@ -209,31 +253,31 @@ body {
 }
 
 /* ============================================
-   SYNC SECTION
+   SYNC
    ============================================ */
 
 .sync-container {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .device-id-btn {
     display: flex;
     align-items: center;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 6px 10px;
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 8px;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .device-id-btn:hover {
-    background: var(--bg-elevated);
+    background: var(--bg-surface);
     color: var(--text-secondary);
 }
 
@@ -241,17 +285,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 5px;
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.2s ease;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
 }
 
 .change-device-btn:hover {
-    background: var(--bg-elevated);
+    background: var(--bg-inset);
     color: var(--color-accent);
 }
 
@@ -259,61 +303,56 @@ body {
     stroke: currentColor;
 }
 
-/* Sync indicator */
 .sync-indicator {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
     border-radius: 6px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.15s ease;
 }
 
 .sync-indicator:hover {
-    background-color: var(--bg-secondary);
+    background: var(--bg-inset);
 }
 
 .sync-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background-color: var(--text-muted);
-    transition: all 0.3s ease;
+    background: var(--text-muted);
+    transition: all 0.2s ease;
 }
 
 .sync-indicator.idle .sync-dot {
-    background-color: var(--text-muted);
-}
-
-.sync-indicator.synced .sync-dot {
-    background-color: var(--color-deficit);
-}
-
-.sync-indicator.syncing .sync-dot {
-    background-color: var(--color-accent);
-    animation: syncPulse 1s ease-in-out infinite;
-}
-
-.sync-indicator.error .sync-dot {
-    background-color: var(--color-surplus);
-}
-
-.sync-indicator.offline .sync-dot {
-    background-color: var(--text-muted);
+    background: var(--text-muted);
     opacity: 0.5;
 }
 
+.sync-indicator.synced .sync-dot {
+    background: var(--color-deficit);
+    box-shadow: 0 0 8px var(--color-deficit-glow);
+}
+
+.sync-indicator.syncing .sync-dot {
+    background: var(--color-accent);
+    animation: syncPulse 0.8s ease-in-out infinite;
+}
+
+.sync-indicator.error .sync-dot {
+    background: var(--color-surplus);
+}
+
+.sync-indicator.offline .sync-dot {
+    background: var(--text-muted);
+    opacity: 0.3;
+}
+
 @keyframes syncPulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.3);
-        opacity: 0.7;
-    }
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
 }
 
 /* ============================================
@@ -322,75 +361,82 @@ body {
 
 .bmr-section {
     text-align: center;
-    margin-bottom: 32px;
-    padding: 20px;
-    background: var(--bg-elevated);
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
 }
 
 .bmr-label {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .bmr-values {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 16px;
-    padding: 0 20px;
+    margin-bottom: 14px;
+    padding: 0 16px;
 }
 
 .bmr-value {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 400;
     color: var(--text-muted);
     transition: all 0.2s ease;
+    opacity: 0.6;
 }
 
 .bmr-value.current {
-    font-size: 28px;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
     color: var(--text-primary);
+    opacity: 1;
+    letter-spacing: -0.02em;
 }
 
 #bmr-slider {
     width: 100%;
-    height: 8px;
+    height: 6px;
     -webkit-appearance: none;
     appearance: none;
-    background: var(--ring-bg);
-    border-radius: 4px;
+    background: var(--ring-track);
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
 }
 
 #bmr-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background: var(--color-accent);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-md), 0 0 0 3px var(--color-accent-soft);
+    transition: transform 0.15s var(--ease-spring), box-shadow 0.15s ease;
 }
 
 #bmr-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: var(--shadow-lg);
+    transform: scale(1.15);
+}
+
+#bmr-slider::-webkit-slider-thumb:active {
+    transform: scale(1.05);
 }
 
 #bmr-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background: var(--color-accent);
     border-radius: 50%;
     cursor: pointer;
@@ -399,61 +445,53 @@ body {
 }
 
 /* ============================================
-   CALORIE DISPLAY - The Hero
+   CALORIE DISPLAY - The Gauge
    ============================================ */
 
 .calorie-display {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 16px 0 32px;
-    min-height: 240px;
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin: 8px 0 24px;
+    min-height: 220px;
 }
 
 .progress-ring {
     position: relative;
-    width: 240px;
-    height: 240px;
+    width: 220px;
+    height: 220px;
 }
 
 .ring {
     width: 100%;
     height: 100%;
     overflow: visible;
-    filter: drop-shadow(0 4px 20px var(--color-deficit-glow));
+    filter: drop-shadow(0 2px 12px var(--color-deficit-glow));
     transition: filter 0.4s ease;
 }
 
 .ring.surplus-active {
-    filter: drop-shadow(0 4px 20px var(--color-surplus-glow));
+    filter: drop-shadow(0 2px 12px var(--color-surplus-glow));
 }
 
 .ring-background {
     fill: none;
-    stroke: var(--ring-bg);
-    stroke-width: 12;
+    stroke: var(--ring-track);
+    stroke-width: 10;
 }
 
 .ring-progress {
     fill: none;
     stroke: var(--color-deficit);
-    stroke-width: 12;
+    stroke-width: 10;
     stroke-linecap: round;
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
-    transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
+    transition: stroke-dashoffset 0.4s var(--ease-out), stroke 0.3s ease;
+}
+
+.ring-progress.surplus {
+    stroke: var(--color-surplus);
 }
 
 .calorie-count {
@@ -465,40 +503,34 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
 #calorie-value {
     font-family: var(--font-mono);
-    font-size: 48px;
-    font-weight: 500;
+    font-size: 44px;
+    font-weight: 600;
     line-height: 1;
     color: var(--color-deficit);
-    letter-spacing: -0.02em;
-    transition: color 0.4s ease, transform 0.15s ease;
+    letter-spacing: -0.03em;
+    transition: color 0.3s ease, transform 0.12s var(--ease-spring);
 }
 
 #calorie-value.bump {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
-.unit {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-/* Surplus state */
 #calorie-value.surplus {
     color: var(--color-surplus);
 }
 
-.ring-progress.surplus {
-    stroke: var(--color-surplus);
+.unit {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
 }
 
 /* ============================================
@@ -508,65 +540,57 @@ body {
 .calorie-buttons {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-bottom: 32px;
+    gap: 12px;
+    margin-bottom: 28px;
 }
 
 .calorie-buttons button {
     border: none;
-    border-radius: 16px;
-    padding: 16px 32px;
+    border-radius: var(--radius-lg);
+    padding: 14px 28px;
     font-family: var(--font-mono);
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s var(--ease-out);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 110px;
+    min-width: 100px;
     position: relative;
     overflow: hidden;
+    color: white;
 }
 
-.calorie-buttons button::after {
+.calorie-buttons button::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.calorie-buttons button:active::after {
-    opacity: 1;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .calorie-buttons button:active {
     transform: scale(0.96);
 }
 
-/* Eat button - Amber (adds calories) */
 .add-btn {
-    background: linear-gradient(135deg, var(--color-eat) 0%, #d97706 100%);
-    color: white;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    background: var(--color-add-gradient);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .add-btn:hover {
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    box-shadow: 0 6px 20px rgba(234, 88, 12, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
     transform: translateY(-2px);
 }
 
-/* Burn button - Cyan (subtracts calories via exercise) */
 .subtract-btn {
-    background: linear-gradient(135deg, var(--color-burn) 0%, #0891b2 100%);
-    color: white;
-    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+    background: var(--color-subtract-gradient);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .subtract-btn:hover {
-    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
     transform: translateY(-2px);
 }
 
@@ -577,37 +601,36 @@ body {
 .view-toggle {
     display: flex;
     justify-content: center;
-    gap: 4px;
-    margin: 16px 0;
-    padding: 4px;
-    background: var(--bg-secondary);
-    border-radius: 12px;
+    gap: 2px;
+    margin: 12px auto 16px;
+    padding: 3px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-md);
     width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    border: 1px solid var(--border);
 }
 
 .view-btn {
-    padding: 10px 20px;
+    padding: 8px 18px;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     background: transparent;
-    color: var(--text-secondary);
-    font-family: var(--font-body);
-    font-size: 14px;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .view-btn:hover {
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 
 .view-btn.active {
-    background: var(--bg-elevated);
+    background: var(--bg-surface);
     color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-xs);
 }
 
 /* ============================================
@@ -617,14 +640,12 @@ body {
 .view {
     display: none;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    animation: fadeIn 0.3s ease;
+    animation: viewFadeIn 0.25s var(--ease-out);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes viewFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .view.active {
@@ -633,15 +654,14 @@ body {
 
 .view-heading {
     text-align: center;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
 }
 
-/* Hide calorie display in week/month views */
 body.week-view-active .calorie-display,
 body.week-view-active .calorie-buttons,
 body.month-view-active .calorie-display,
@@ -657,26 +677,27 @@ body.month-view-active .calorie-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 24px;
-    background: var(--bg-elevated);
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
+    gap: 14px;
+    padding: 20px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
 }
 
 .pounds-indicator {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 4px;
 }
 
 #pounds-count {
     font-family: var(--font-mono);
-    font-size: 36px;
-    font-weight: 500;
+    font-size: 32px;
+    font-weight: 600;
     color: var(--color-deficit);
-    transition: color 0.3s ease;
+    transition: color 0.25s ease;
+    letter-spacing: -0.02em;
 }
 
 #pounds-count.surplus {
@@ -684,7 +705,7 @@ body.month-view-active .calorie-buttons {
 }
 
 .pounds-label {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--text-muted);
 }
@@ -692,64 +713,62 @@ body.month-view-active .calorie-buttons {
 .dots {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    padding: 8px 0;
+    gap: 8px;
+    padding: 4px 0;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background-color: var(--ring-bg);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--ring-track);
+    transition: all 0.25s var(--ease-spring);
 }
 
 .dot.active {
-    background-color: var(--color-deficit);
-    transform: scale(1.2);
-    box-shadow: 0 0 12px var(--color-deficit-glow);
+    background: var(--color-deficit);
+    transform: scale(1.25);
+    box-shadow: 0 0 10px var(--color-deficit-glow);
 }
 
 .dot.active.surplus {
-    background-color: var(--color-surplus);
-    box-shadow: 0 0 12px var(--color-surplus-glow);
+    background: var(--color-surplus);
+    box-shadow: 0 0 10px var(--color-surplus-glow);
 }
 
 .progress-label {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
 }
 
 #progress-to-pound {
     font-family: var(--font-mono);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-secondary);
 }
 
 .weight-progress.almost-complete .dots {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation: progressPulse 1.2s ease-in-out infinite;
 }
 
-@keyframes pulse {
+@keyframes progressPulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.03); }
 }
 
 /* ============================================
-   CALENDAR STYLES
+   CALENDAR
    ============================================ */
 
 .calendar-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 100%;
-    margin-top: 16px;
+    margin-top: 12px;
     opacity: 0;
     height: 0;
     overflow: hidden;
-    transition: opacity 0.3s ease;
-    box-sizing: border-box;
+    transition: opacity 0.25s ease;
 }
 
 .calendar-container.active {
@@ -762,35 +781,35 @@ body.month-view-active .calorie-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
 .calendar-nav-btn {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 18px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 16px;
     color: var(--color-accent);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .calendar-nav-btn:hover:not(:disabled) {
     background: var(--bg-elevated);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-xs);
 }
 
 .calendar-nav-btn:disabled {
     color: var(--text-muted);
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
 .calendar-label {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-primary);
     min-width: 100px;
@@ -801,26 +820,24 @@ body.month-view-active .calorie-buttons {
 .calendar-month {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 3px;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
 }
 
 .day-header {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-align: center;
     color: var(--text-muted);
-    padding: 8px 0;
+    padding: 6px 0;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 .calendar-day {
-    background: var(--bg-secondary);
-    border-radius: 12px;
-    padding: 8px 4px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 6px 3px;
     text-align: center;
     aspect-ratio: 1;
     display: flex;
@@ -828,28 +845,28 @@ body.month-view-active .calorie-buttons {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     border: 2px solid transparent;
 }
 
 .calendar-day:hover:not(.empty) {
-    background: var(--bg-elevated);
-    box-shadow: var(--shadow-sm);
-    transform: scale(1.02);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-xs);
+    transform: scale(1.03);
 }
 
 .calendar-day .day-label {
     font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-primary);
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 
 .calendar-day .calorie-value {
     font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 9px;
+    font-weight: 600;
     color: var(--text-secondary);
 }
 
@@ -858,8 +875,7 @@ body.month-view-active .calorie-buttons {
 }
 
 .calendar-day.deficit .calorie-value {
-    color: #0f766e; /* Darker teal for better contrast */
-    font-weight: 600;
+    color: var(--color-deficit);
 }
 
 .calendar-day.surplus {
@@ -867,26 +883,7 @@ body.month-view-active .calorie-buttons {
 }
 
 .calendar-day.surplus .calorie-value {
-    color: #be123c; /* Darker rose for better contrast */
-    font-weight: 600;
-}
-
-/* Dark mode calendar text colors */
-.dark-mode .calendar-day.deficit .calorie-value {
-    color: #5eead4; /* Brighter teal for dark backgrounds */
-}
-
-.dark-mode .calendar-day.surplus .calorie-value {
-    color: #fb7185; /* Brighter rose for dark backgrounds */
-}
-
-@media (prefers-color-scheme: dark) {
-    .auto-theme .calendar-day.deficit .calorie-value {
-        color: #5eead4;
-    }
-    .auto-theme .calendar-day.surplus .calorie-value {
-        color: #fb7185;
-    }
+    color: var(--color-surplus);
 }
 
 .calendar-day.today {
@@ -911,29 +908,29 @@ body.month-view-active .calorie-buttons {
 .data-management {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin: 24px 0;
+    gap: 10px;
+    margin: 20px 0;
     padding-top: 16px;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border);
 }
 
 .data-btn {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-family: var(--font-body);
-    font-size: 13px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-family: var(--font-display);
+    font-size: 12px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .data-btn:hover {
     background: var(--bg-elevated);
-    color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-xs);
     transform: translateY(-1px);
 }
 
@@ -945,73 +942,73 @@ body.month-view-active .calorie-buttons {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 100;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    animation: fadeIn 0.2s ease;
 }
 
 .modal.active {
     display: flex;
+    animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-content {
-    background: var(--bg-elevated);
-    border-radius: 20px;
-    padding: 28px;
-    max-width: 340px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    max-width: 320px;
     width: 100%;
     text-align: center;
     box-shadow: var(--shadow-lg);
-    animation: modalSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: modalSlideUp 0.25s var(--ease-out);
+    border: 1px solid var(--border);
 }
 
 @keyframes modalSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .modal-content h3 {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .modal-content p {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
 }
 
 .modal-buttons {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-top: 24px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .modal-btn {
     background: var(--color-accent);
     color: white;
     border: none;
-    border-radius: 10px;
-    padding: 12px 24px;
-    font-family: var(--font-body);
-    font-size: 14px;
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    font-family: var(--font-display);
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .modal-btn:hover {
@@ -1020,24 +1017,24 @@ body.month-view-active .calorie-buttons {
 }
 
 .modal-btn.cancel {
-    background: var(--bg-secondary);
+    background: var(--bg-inset);
     color: var(--text-secondary);
 }
 
 .modal-btn.cancel:hover {
-    background: var(--ring-bg);
+    background: var(--ring-track);
 }
 
 /* Log Modal */
 .log-modal-content {
-    max-width: 360px;
+    max-width: 340px;
     max-height: 80vh;
 }
 
 .log-list-container {
     max-height: 50vh;
     overflow-y: auto;
-    margin: 20px 0;
+    margin: 16px 0;
     padding: 0 4px;
 }
 
@@ -1049,8 +1046,8 @@ body.month-view-active .calorie-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
 }
 
 #log-list li:last-child {
@@ -1059,71 +1056,71 @@ body.month-view-active .calorie-buttons {
 
 .log-entry-time {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
 }
 
 .log-entry-amount {
     font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .log-entry-amount.positive {
-    color: var(--color-eat);
+    color: var(--color-add);
 }
 
 .log-entry-amount.negative {
-    color: var(--color-burn);
+    color: var(--color-subtract);
 }
 
 .empty-log-message {
-    padding: 32px 16px;
+    padding: 28px 16px;
     color: var(--text-muted);
-    font-size: 14px;
+    font-size: 13px;
 }
 
 /* Edit Calories Modal */
 #edit-calories-date {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-secondary);
-    margin: 8px 0 16px;
+    margin: 6px 0 12px;
 }
 
 .edit-calories-input-container {
-    margin: 20px 0;
+    margin: 16px 0;
 }
 
 .edit-calories-input-container label {
     display: block;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 #edit-calories-input,
 #new-device-id-input {
     width: 100%;
-    max-width: 280px;
-    padding: 14px;
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-primary);
+    max-width: 260px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-inset);
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
     -webkit-appearance: none;
 }
 
 #edit-calories-input {
-    font-size: 20px;
-    max-width: 180px;
+    font-size: 18px;
+    max-width: 160px;
 }
 
 #edit-calories-input:focus,
@@ -1134,7 +1131,7 @@ body.month-view-active .calorie-buttons {
 }
 
 /* ============================================
-   RESPONSIVE STYLES
+   RESPONSIVE
    ============================================ */
 
 @media (max-width: 480px) {
@@ -1143,61 +1140,61 @@ body.month-view-active .calorie-buttons {
     }
 
     .header {
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
 
     .bmr-section {
-        padding: 16px;
-        margin-bottom: 24px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
     }
 
     .bmr-value.current {
-        font-size: 24px;
+        font-size: 28px;
     }
 
     .progress-ring {
-        width: 200px;
-        height: 200px;
+        width: 190px;
+        height: 190px;
     }
 
     #calorie-value {
-        font-size: 40px;
+        font-size: 38px;
     }
 
     .calorie-buttons {
-        gap: 12px;
+        gap: 10px;
     }
 
     .calorie-buttons button {
-        padding: 14px 24px;
-        font-size: 16px;
-        min-width: 100px;
+        padding: 12px 22px;
+        font-size: 15px;
+        min-width: 90px;
     }
 
     .calendar-day {
-        border-radius: 10px;
-        padding: 6px 2px;
+        border-radius: 6px;
+        padding: 4px 2px;
     }
 
     .calendar-day .day-label {
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .calendar-day .calorie-value {
-        font-size: 10px;
+        font-size: 8px;
     }
 }
 
-/* Safe area for notched phones */
+/* Safe area */
 @supports (padding: max(0px)) {
     .container {
-        padding-left: max(20px, env(safe-area-inset-left));
-        padding-right: max(20px, env(safe-area-inset-right));
-        padding-bottom: max(20px, env(safe-area-inset-bottom));
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
     }
 }
 
-/* Safari specific fixes */
+/* Safari fixes */
 @supports (-webkit-touch-callout: none) {
     .ring-progress {
         -webkit-transform: rotate(-90deg);
@@ -1222,7 +1219,7 @@ body.month-view-active .calorie-buttons {
     }
 }
 
-/* Firefox specific fixes */
+/* Firefox fixes */
 @-moz-document url-prefix() {
     .container {
         min-height: calc(100vh - 40px);
@@ -1237,7 +1234,7 @@ body.month-view-active .calorie-buttons {
     }
 }
 
-/* Reduced motion preference */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
