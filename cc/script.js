@@ -866,26 +866,33 @@ function updateSparkline() {
     const zeroY = scaleY(0);
     let areaD = pathD + ` L ${points[points.length - 1].x} ${zeroY} L ${points[0].x} ${zeroY} Z`;
 
+    // Get computed colors (CSS variables don't work in SVG on iOS Safari)
+    const styles = getComputedStyle(document.body);
+    const deficitColor = styles.getPropertyValue('--color-deficit').trim() || '#0f766e';
+    const surplusColor = styles.getPropertyValue('--color-surplus').trim() || '#dc2626';
+    const mutedColor = styles.getPropertyValue('--text-muted').trim() || '#a8a29e';
+    const surfaceColor = styles.getPropertyValue('--bg-surface').trim() || '#ffffff';
+
     // Build SVG content
     svg.innerHTML = `
         <defs>
             <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color: var(--color-deficit); stop-opacity: 0.3"/>
-                <stop offset="100%" style="stop-color: var(--color-deficit); stop-opacity: 0.05"/>
+                <stop offset="0%" stop-color="${deficitColor}" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="${deficitColor}" stop-opacity="0.05"/>
             </linearGradient>
         </defs>
         <!-- Zero line -->
         <line x1="${padding}" y1="${zeroY}" x2="${width - padding}" y2="${zeroY}"
-              stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
+              stroke="${mutedColor}" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
         <!-- Area fill -->
         <path d="${areaD}" fill="url(#sparkline-gradient)"/>
         <!-- Line -->
-        <path d="${pathD}" fill="none" stroke="var(--color-deficit)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${pathD}" fill="none" stroke="${deficitColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <!-- Points -->
         ${points.map((p, i) => `
             <circle cx="${p.x}" cy="${p.y}" r="${i === points.length - 1 ? 4 : 3}"
-                    fill="${p.netCalories > 0 ? 'var(--color-surplus)' : 'var(--color-deficit)'}"
-                    ${i === points.length - 1 ? 'stroke="var(--bg-surface)" stroke-width="2"' : ''}/>
+                    fill="${p.netCalories > 0 ? surplusColor : deficitColor}"
+                    ${i === points.length - 1 ? `stroke="${surfaceColor}" stroke-width="2"` : ''}/>
         `).join('')}
     `;
 }
