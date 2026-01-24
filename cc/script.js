@@ -785,9 +785,14 @@ function updateDotsDisplay() {
     const totalCalories = getTotalCalories();
 
     // Calculate pounds and progress
+    // Negative totalCalories = deficit (weight loss), Positive = surplus (weight gain)
+    const isDeficit = totalCalories < 0;
     const totalPounds = Math.floor(Math.abs(totalCalories) / CALORIES_PER_POUND);
     const remainingCalories = Math.abs(totalCalories) % CALORIES_PER_POUND;
-    const progressToNextPound = Math.round((remainingCalories / CALORIES_PER_POUND) * 100);
+    // Progress only counts toward weight LOSS goal - in surplus, progress is 0
+    const progressToNextPound = isDeficit
+        ? Math.round((remainingCalories / CALORIES_PER_POUND) * 100)
+        : 0;
 
     // Update pounds display
     const poundsCount = document.getElementById('pounds-count');
