@@ -978,8 +978,9 @@ function createCalendarDay(date, dateKey) {
 
     // Add calorie information if available
     const netCalories = calculateNetCaloriesForDate(dateKey);
+    const hasData = isToday || (state.dailyData && state.dailyData[dateKey]);
 
-    if (netCalories !== 0) {
+    if (hasData || netCalories !== 0) {
         const calorieElement = document.createElement('div');
         calorieElement.className = 'calorie-value';
         calorieElement.textContent = netCalories.toFixed(0);
@@ -988,9 +989,10 @@ function createCalendarDay(date, dateKey) {
         // Add deficit/surplus class
         if (netCalories < 0) {
             dayElement.classList.add('deficit');
-        } else {
+        } else if (netCalories > 0) {
             dayElement.classList.add('surplus');
         }
+        // netCalories === 0 gets no color class (neutral)
     }
 
     // Add click event listener to edit calories
