@@ -40,36 +40,54 @@ async function loadFromCloud() {
 }
 
 async function saveToCloud() {
-    if (!API_URL) return;
+    if (!API_URL) {
+        console.log('[sync] No API_URL, skipping');
+        return;
+    }
+
+    console.log('[sync] saveToCloud called, deviceId:', getDeviceId());
 
     try {
-        const response = await fetch(`${API_URL}/state/${getDeviceId()}`, {
+        const url = `${API_URL}/state/${getDeviceId()}`;
+        const body = JSON.stringify(state);
+        console.log('[sync] Fetching:', url);
+
+        const response = await fetch(url, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(state)
+            body: body
         });
+
+        console.log('[sync] Response:', response.status);
 
         if (response.ok) {
             syncStatus = 'synced';
         } else {
-            console.warn('Cloud save failed:', response.status);
+            console.warn('[sync] Cloud save failed:', response.status);
             syncStatus = 'error';
         }
         updateSyncIndicator();
     } catch (e) {
-        console.warn('Cloud save failed:', e);
+        console.error('[sync] Cloud save error:', e);
         syncStatus = navigator.onLine ? 'error' : 'offline';
         updateSyncIndicator();
     }
 }
 
 function debouncedCloudSync() {
-    if (!API_URL) return;
+    if (!API_URL) {
+        console.log('[sync] No API_URL in debounce');
+        return;
+    }
 
+    console.log('[sync] debouncedCloudSync called');
     clearTimeout(syncTimeout);
     syncStatus = 'syncing';
     updateSyncIndicator();
-    syncTimeout = setTimeout(saveToCloud, 2000);
+    syncTimeout = setTimeout(() => {
+        console.log('[sync] Timer fired, calling saveToCloud');
+        saveToCloud();
+    }, 2000);
 }
 
 // Initialize state
