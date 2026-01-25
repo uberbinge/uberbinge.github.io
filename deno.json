@@ -1,0 +1,24 @@
+{
+  "deploy": {
+    "project": "0411a73c-29e8-422b-9b63-fae217601b48",
+    "exclude": [
+      "**/node_modules",
+      "_posts",
+      "_drafts",
+      "_layouts",
+      "_includes",
+      "_sass",
+      "_site",
+      "assets",
+      ".jekyll-cache",
+      "*.md",
+      "Gemfile*",
+      "_config.yml",
+      ".git"
+    ],
+    "include": [
+      "cc/**"
+    ],
+    "entrypoint": "cc/api/main.ts"
+  }
+}
