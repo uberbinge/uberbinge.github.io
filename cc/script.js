@@ -862,9 +862,8 @@ function updateSparkline() {
         pathD += ` C ${cpx} ${prev.y}, ${cpx} ${curr.y}, ${curr.x} ${curr.y}`;
     }
 
-    // Create gradient area path (for fill)
+    // Zero line position
     const zeroY = scaleY(0);
-    let areaD = pathD + ` L ${points[points.length - 1].x} ${zeroY} L ${points[0].x} ${zeroY} Z`;
 
     // Get computed colors (CSS variables don't work in SVG on iOS Safari)
     const styles = getComputedStyle(document.body);
@@ -873,24 +872,16 @@ function updateSparkline() {
     const mutedColor = styles.getPropertyValue('--text-muted').trim() || '#a8a29e';
     const surfaceColor = styles.getPropertyValue('--bg-surface').trim() || '#ffffff';
 
-    // Build SVG content
+    // Build SVG content - simple line with colored dots
     svg.innerHTML = `
-        <defs>
-            <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="${deficitColor}" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="${deficitColor}" stop-opacity="0.05"/>
-            </linearGradient>
-        </defs>
         <!-- Zero line -->
         <line x1="${padding}" y1="${zeroY}" x2="${width - padding}" y2="${zeroY}"
-              stroke="${mutedColor}" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>
-        <!-- Area fill -->
-        <path d="${areaD}" fill="url(#sparkline-gradient)"/>
+              stroke="${mutedColor}" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
         <!-- Line -->
-        <path d="${pathD}" fill="none" stroke="${deficitColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${pathD}" fill="none" stroke="${mutedColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
         <!-- Points -->
         ${points.map((p, i) => `
-            <circle cx="${p.x}" cy="${p.y}" r="${i === points.length - 1 ? 4 : 3}"
+            <circle cx="${p.x}" cy="${p.y}" r="${i === points.length - 1 ? 5 : 3.5}"
                     fill="${p.netCalories > 0 ? surplusColor : deficitColor}"
                     ${i === points.length - 1 ? `stroke="${surfaceColor}" stroke-width="2"` : ''}/>
         `).join('')}
