@@ -780,7 +780,37 @@ function updateProgressRing() {
     // Color is now handled by CSS classes (surplus class)
 }
 
+function updateDailyTotals() {
+    // Calculate totals from calorie log
+    let totalIn = 0;
+    let totalOut = 0;
+
+    if (state.calorieLog && state.calorieLog.length > 0) {
+        state.calorieLog.forEach(entry => {
+            if (entry.amount > 0) {
+                totalIn += entry.amount;
+            } else {
+                totalOut += Math.abs(entry.amount);
+            }
+        });
+    }
+
+    // Update the display
+    const totalInEl = document.getElementById('total-in');
+    const totalOutEl = document.getElementById('total-out');
+
+    if (totalInEl) {
+        totalInEl.textContent = `+${totalIn.toLocaleString()}`;
+    }
+    if (totalOutEl) {
+        totalOutEl.textContent = `-${totalOut.toLocaleString()}`;
+    }
+}
+
 function updateDotsDisplay() {
+    // Update daily totals
+    updateDailyTotals();
+
     // Get the total calories (history + current day)
     const totalCalories = getTotalCalories();
 
