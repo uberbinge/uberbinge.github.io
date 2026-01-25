@@ -25,7 +25,7 @@ app.use("*", async (c, next) => {
 app.get("/health", (c) => c.json({ ok: true }));
 
 // Withings OAuth callback - HEAD for URL verification
-app.head("/callback", (c) => {
+app.on("HEAD", "/callback", (c) => {
   return c.body(null, 200);
 });
 
