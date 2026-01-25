@@ -781,29 +781,29 @@ function updateProgressRing() {
 }
 
 function updateDailyTotals() {
-    // Calculate totals from calorie log
-    let totalIn = 0;
-    let totalOut = 0;
+    // Calculate total eaten from calorie log (positive entries only)
+    let totalEaten = 0;
 
     if (state.calorieLog && state.calorieLog.length > 0) {
         state.calorieLog.forEach(entry => {
             if (entry.amount > 0) {
-                totalIn += entry.amount;
-            } else {
-                totalOut += Math.abs(entry.amount);
+                totalEaten += entry.amount;
             }
         });
     }
+
+    // Get BMR burned so far today
+    const bmrBurned = Math.round(calculateCaloriesBurned());
 
     // Update the display
     const totalInEl = document.getElementById('total-in');
     const totalOutEl = document.getElementById('total-out');
 
     if (totalInEl) {
-        totalInEl.textContent = `+${totalIn.toLocaleString()}`;
+        totalInEl.textContent = `+${totalEaten.toLocaleString()}`;
     }
     if (totalOutEl) {
-        totalOutEl.textContent = `-${totalOut.toLocaleString()}`;
+        totalOutEl.textContent = `-${bmrBurned.toLocaleString()}`;
     }
 }
 
