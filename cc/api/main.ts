@@ -9,7 +9,7 @@ const kv = await Deno.openKv();
 // CORS middleware - allow all origins for this simple app
 app.use("/*", cors({
   origin: "*",
-  allowMethods: ["GET", "PUT", "OPTIONS"],
+  allowMethods: ["GET", "PUT", "HEAD", "OPTIONS"],
   allowHeaders: ["Content-Type"],
 }));
 
@@ -24,7 +24,12 @@ app.use("*", async (c, next) => {
 // Health check
 app.get("/health", (c) => c.json({ ok: true }));
 
-// Withings OAuth callback
+// Withings OAuth callback - HEAD for URL verification
+app.head("/callback", (c) => {
+  return c.body(null, 200);
+});
+
+// Withings OAuth callback - GET for actual OAuth flow
 app.get("/callback", (c) => {
   const code = c.req.query("code");
   const state = c.req.query("state");
