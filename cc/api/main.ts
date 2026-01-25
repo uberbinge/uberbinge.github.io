@@ -24,6 +24,28 @@ app.use("*", async (c, next) => {
 // Health check
 app.get("/health", (c) => c.json({ ok: true }));
 
+// Withings OAuth callback
+app.get("/callback", (c) => {
+  const code = c.req.query("code");
+  const state = c.req.query("state");
+
+  if (code) {
+    return c.html(`
+      <html>
+        <body style="font-family: monospace; padding: 40px;">
+          <h2>Withings Authorization</h2>
+          <p><strong>Code:</strong></p>
+          <pre style="background: #f0f0f0; padding: 10px; user-select: all;">${code}</pre>
+          ${state ? `<p><strong>State:</strong> ${state}</p>` : ""}
+          <p>Copy this code and paste it in your terminal.</p>
+        </body>
+      </html>
+    `);
+  }
+
+  return c.text("Missing code parameter", 400);
+});
+
 // GET /state/:id - fetch state for a device
 app.get("/state/:id", async (c) => {
   const id = c.req.param("id");
