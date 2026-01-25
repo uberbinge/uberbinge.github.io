@@ -29,21 +29,23 @@ app.get("/callback", (c) => {
   const code = c.req.query("code");
   const state = c.req.query("state");
 
-  if (code) {
-    return c.html(`
-      <html>
-        <body style="font-family: monospace; padding: 40px;">
-          <h2>Withings Authorization</h2>
-          <p><strong>Code:</strong></p>
-          <pre style="background: #f0f0f0; padding: 10px; user-select: all;">${code}</pre>
-          ${state ? `<p><strong>State:</strong> ${state}</p>` : ""}
-          <p>Copy this code and paste it in your terminal.</p>
-        </body>
-      </html>
-    `);
+  // Handle Withings URL verification (no code parameter)
+  if (!code) {
+    return c.text("OK", 200);
   }
 
-  return c.text("Missing code parameter", 400);
+  // Handle actual OAuth callback (with code)
+  return c.html(`
+    <html>
+      <body style="font-family: monospace; padding: 40px;">
+        <h2>Withings Authorization</h2>
+        <p><strong>Code:</strong></p>
+        <pre style="background: #f0f0f0; padding: 10px; user-select: all;">${code}</pre>
+        ${state ? `<p><strong>State:</strong> ${state}</p>` : ""}
+        <p>Copy this code and paste it in your terminal.</p>
+      </body>
+    </html>
+  `);
 });
 
 // GET /state/:id - fetch state for a device
