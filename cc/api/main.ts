@@ -29,20 +29,28 @@ app.get("/callback", (c) => {
   const code = c.req.query("code");
   const state = c.req.query("state");
 
-  // Handle Withings URL verification (no code parameter)
-  if (!code) {
-    return c.text("OK", 200);
+  // Handle actual OAuth callback (with code)
+  if (code) {
+    return c.html(`
+      <html>
+        <body style="font-family: monospace; padding: 40px;">
+          <h2>Withings Authorization</h2>
+          <p><strong>Code:</strong></p>
+          <pre style="background: #f0f0f0; padding: 10px; user-select: all;">${code}</pre>
+          ${state ? `<p><strong>State:</strong> ${state}</p>` : ""}
+          <p>Copy this code and paste it in your terminal.</p>
+        </body>
+      </html>
+    `);
   }
 
-  // Handle actual OAuth callback (with code)
+  // Handle Withings URL verification (no code parameter)
   return c.html(`
     <html>
-      <body style="font-family: monospace; padding: 40px;">
-        <h2>Withings Authorization</h2>
-        <p><strong>Code:</strong></p>
-        <pre style="background: #f0f0f0; padding: 10px; user-select: all;">${code}</pre>
-        ${state ? `<p><strong>State:</strong> ${state}</p>` : ""}
-        <p>Copy this code and paste it in your terminal.</p>
+      <head><title>Callback Ready</title></head>
+      <body>
+        <h1>OK</h1>
+        <p>Callback endpoint is ready.</p>
       </body>
     </html>
   `);
