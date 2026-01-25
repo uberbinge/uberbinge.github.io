@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withings Authorization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        h2 { color: #333; }
+        .code-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            word-break: break-all;
+            user-select: all;
+            cursor: pointer;
+        }
+        .code-box:hover {
+            background: #f0f8ff;
+        }
+        .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .success { color: #0a0; }
+        .error { color: #c00; }
+        .info { color: #666; font-size: 14px; margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h2>Withings Authorization</h2>
+
+    <div id="error-view" class="hidden">
+        <p class="error">Authorization failed: <span id="error-msg"></span></p>
+        <p id="error-desc"></p>
+    </div>
+
+    <div id="success-view" class="hidden">
+        <p class="success">Authorization successful!</p>
+        <div class="label">Authorization Code (click to copy):</div>
+        <div class="code-box" id="code-box"></div>
+        <div id="state-section" class="hidden">
+            <div class="label">State:</div>
+            <div class="code-box" id="state-box"></div>
+        </div>
+        <p class="info">Copy this code and use it to complete the setup.</p>
+    </div>
+
+    <div id="ready-view" class="hidden">
+        <p>Callback endpoint ready.</p>
+        <p class="info">This page receives OAuth authorization codes from Withings.</p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
+        const error = params.get('error');
+
+        if (error) {
+            document.getElementById('error-view').classList.remove('hidden');
+            document.getElementById('error-msg').textContent = error;
+            document.getElementById('error-desc').textContent = params.get('error_description') || '';
+        } else if (code) {
+            document.getElementById('success-view').classList.remove('hidden');
+            const codeBox = document.getElementById('code-box');
+            codeBox.textContent = code;
+            codeBox.addEventListener('click', function() {
+                navigator.clipboard.writeText(code).then(function() {
+                    alert('Code copied to clipboard!');
+                });
+            });
+            if (state) {
+                document.getElementById('state-section').classList.remove('hidden');
+                document.getElementById('state-box').textContent = state;
+            }
+        } else {
+            document.getElementById('ready-view').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
