@@ -755,7 +755,8 @@ function updateCalorieDisplay() {
     // Calculate and update the calorie display
     const netCalories = getNetCalories();
 
-    calorieValueEl.textContent = netCalories.toLocaleString(undefined, {
+    // Show absolute value - color indicates deficit (teal) vs surplus (red)
+    calorieValueEl.textContent = Math.abs(netCalories).toLocaleString(undefined, {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1
     });
@@ -1067,7 +1068,8 @@ function createCalendarDay(date, dateKey) {
     if (hasData || netCalories !== 0) {
         const calorieElement = document.createElement('div');
         calorieElement.className = 'calorie-value';
-        calorieElement.textContent = netCalories.toFixed(0);
+        // Show absolute value - color indicates deficit (teal) vs surplus (red)
+        calorieElement.textContent = Math.abs(netCalories).toFixed(0);
         dayElement.appendChild(calorieElement);
 
         // Add deficit/surplus class
