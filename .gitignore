@@ -47,3 +47,4 @@ node_modules
 .sass-cache
 .jekyll-metadata
 .playwright-mcp/
+.env
