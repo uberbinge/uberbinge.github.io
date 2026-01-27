@@ -455,54 +455,60 @@ function formatDateKey(date) {
 
 function processMissedDays() {
     const now = Date.now();
-    const lastUpdated = state.lastUpdated || now;
     const currentDayStart = getDayStartTime();
 
-    // If last update was today, no need to process missed days
-    if (lastUpdated >= currentDayStart) {
+    // If dayStart is already today, no need to process missed days
+    if (state.dayStart >= currentDayStart) {
         return;
     }
 
-    // Calculate how many days we've missed
-    const daysSinceLastUpdate = Math.floor((currentDayStart - lastUpdated) / DAY_IN_MS);
+    // Calculate how many days we've missed based on dayStart (midnight of last active day)
+    const daysSinceLastActive = Math.floor((currentDayStart - state.dayStart) / DAY_IN_MS);
 
-    if (daysSinceLastUpdate <= 0) {
+    if (daysSinceLastActive <= 0) {
         return;
     }
 
-    // Process each missed day
-    let processDate = new Date(lastUpdated);
-
-    // First, save the last active day's data (cap calories burned to 24h max)
-    const lastActiveDayKey = formatDateKey(processDate);
-    // Calculate the time spent in the last active day (cap at 24h)
-    let lastDayElapsed = Math.min(DAY_IN_MS, currentDayStart - state.dayStart);
-    let lastDayCaloriesBurned = Math.round((state.bmr / DAY_IN_MS) * lastDayElapsed * 10) / 10;
+    // First, save the last active day's data
+    const lastActiveDayKey = formatDateKey(state.dayStart);
+    // Full day of BMR burn for the last active day
+    let lastDayCaloriesBurned = state.bmr;
     let lastDayNetCalories = state.manualCalories - lastDayCaloriesBurned;
     state.dailyData[lastActiveDayKey] = {
         bmr: state.bmr,
         manualCalories: state.manualCalories,
         netCalories: lastDayNetCalories,
-        date: lastActiveDayKey
+        date: lastActiveDayKey,
+        calorieLog: state.calorieLog // Save the log for the last active day
     };
 
-    // Now process each fully missed day
-    for (let i = 1; i < daysSinceLastUpdate; i++) {
+    // Add to total history
+    state.totalCalorieHistory += lastDayNetCalories;
+
+    // Now process each fully missed day (days between last active and today)
+    let processDate = new Date(state.dayStart);
+    for (let i = 1; i < daysSinceLastActive; i++) {
         // Move to the next day
         processDate = new Date(processDate.getTime() + DAY_IN_MS);
         const dateKey = formatDateKey(processDate);
 
         // For missed days, we only count BMR (no manual calories)
+        const missedDayNetCalories = -state.bmr;
         state.dailyData[dateKey] = {
             bmr: state.bmr,
             manualCalories: 0,
-            netCalories: -state.bmr, // Full day of BMR burn with no intake
-            date: dateKey
+            netCalories: missedDayNetCalories,
+            date: dateKey,
+            calorieLog: []
         };
+
+        // Add missed day to total history
+        state.totalCalorieHistory += missedDayNetCalories;
     }
 
     // Reset the current day's data
     state.manualCalories = 0;
+    state.calorieLog = [];
     state.dayStart = currentDayStart;
     state.lastUpdated = now;
 
