@@ -826,8 +826,9 @@ function updateTotalsDisplay(eaten, burned, eatenLabel, burnedLabel) {
 
 function calculateTotalsForDateRange(startDate, endDate) {
     let totalEaten = 0;
-    let totalBurned = 0;
+    let totalBmrBurned = 0;
     const today = formatDateKey(new Date());
+    const todayDate = new Date();
 
     // Iterate through dates in range
     const current = new Date(startDate);
@@ -836,32 +837,31 @@ function calculateTotalsForDateRange(startDate, endDate) {
     while (current <= end) {
         const dateKey = formatDateKey(current);
 
+        // Don't count future dates
+        if (current > todayDate) {
+            current.setDate(current.getDate() + 1);
+            continue;
+        }
+
         if (dateKey === today) {
-            // For today, use current calorieLog
-            if (state.calorieLog) {
-                state.calorieLog.forEach(entry => {
-                    if (entry.amount > 0) totalEaten += entry.amount;
-                    else totalBurned += Math.abs(entry.amount);
-                });
+            // For today, use current state
+            if (state.manualCalories > 0) {
+                totalEaten += state.manualCalories;
             }
+            totalBmrBurned += calculateCaloriesBurned();
         } else if (state.dailyData && state.dailyData[dateKey]) {
             // For past days, use stored data
             const dayData = state.dailyData[dateKey];
-            if (dayData.calorieLog) {
-                dayData.calorieLog.forEach(entry => {
-                    if (entry.amount > 0) totalEaten += entry.amount;
-                    else totalBurned += Math.abs(entry.amount);
-                });
-            } else if (dayData.manualCalories > 0) {
-                // Fallback if no calorieLog but has manualCalories
+            if (dayData.manualCalories > 0) {
                 totalEaten += dayData.manualCalories;
             }
+            totalBmrBurned += dayData.bmr || state.bmr;
         }
 
         current.setDate(current.getDate() + 1);
     }
 
-    return { eaten: totalEaten, burned: totalBurned };
+    return { eaten: totalEaten, burned: Math.round(totalBmrBurned) };
 }
 
 function updateWeeklyTotals() {
