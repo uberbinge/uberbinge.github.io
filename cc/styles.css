@@ -602,7 +602,7 @@ body.auto-theme::before {
     display: flex;
     justify-content: center;
     gap: 32px;
-    margin-bottom: 20px;
+    margin: 16px 0;
     padding: 0 16px;
 }
 
