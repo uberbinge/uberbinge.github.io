@@ -585,6 +585,7 @@ function switchView(viewType) {
         dayViewBtn.classList.add('active');
         document.body.classList.add('day-view-active');
         calorieDisplay.style.display = 'flex';
+        updateDailyTotals();
     } else if (viewType === 'week') {
         weekView.classList.add('active');
         weekViewBtn.classList.add('active');
@@ -595,6 +596,7 @@ function switchView(viewType) {
         // Force reflow
         void weekContainer.offsetHeight;
         updateWeekCalendar();
+        updateWeeklyTotals();
     } else if (viewType === 'month') {
         monthView.classList.add('active');
         monthViewBtn.classList.add('active');
@@ -605,6 +607,7 @@ function switchView(viewType) {
         // Force reflow
         void monthContainer.offsetHeight;
         updateMonthCalendar();
+        updateMonthlyTotals();
     }
 
     // Force a repaint in Safari
@@ -784,7 +787,7 @@ function updateProgressRing() {
 }
 
 function updateDailyTotals() {
-    // Calculate totals from calorie log
+    // Calculate totals from calorie log for today
     let totalEaten = 0;
     let totalBurned = 0;
 
@@ -798,16 +801,88 @@ function updateDailyTotals() {
         });
     }
 
-    // Update the display
+    updateTotalsDisplay(totalEaten, totalBurned, 'eaten', 'burned');
+}
+
+function updateTotalsDisplay(eaten, burned, eatenLabel, burnedLabel) {
     const totalInEl = document.getElementById('total-in');
     const totalOutEl = document.getElementById('total-out');
+    const eatenLabelEl = document.querySelector('.total-in .total-label');
+    const burnedLabelEl = document.querySelector('.total-out .total-label');
 
     if (totalInEl) {
-        totalInEl.textContent = `+${totalEaten.toLocaleString()}`;
+        totalInEl.textContent = `+${eaten.toLocaleString()}`;
     }
     if (totalOutEl) {
-        totalOutEl.textContent = `-${totalBurned.toLocaleString()}`;
+        totalOutEl.textContent = `-${burned.toLocaleString()}`;
     }
+    if (eatenLabelEl) {
+        eatenLabelEl.textContent = eatenLabel;
+    }
+    if (burnedLabelEl) {
+        burnedLabelEl.textContent = burnedLabel;
+    }
+}
+
+function calculateTotalsForDateRange(startDate, endDate) {
+    let totalEaten = 0;
+    let totalBurned = 0;
+    const today = formatDateKey(new Date());
+
+    // Iterate through dates in range
+    const current = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (current <= end) {
+        const dateKey = formatDateKey(current);
+
+        if (dateKey === today) {
+            // For today, use current calorieLog
+            if (state.calorieLog) {
+                state.calorieLog.forEach(entry => {
+                    if (entry.amount > 0) totalEaten += entry.amount;
+                    else totalBurned += Math.abs(entry.amount);
+                });
+            }
+        } else if (state.dailyData && state.dailyData[dateKey]) {
+            // For past days, use stored data
+            const dayData = state.dailyData[dateKey];
+            if (dayData.calorieLog) {
+                dayData.calorieLog.forEach(entry => {
+                    if (entry.amount > 0) totalEaten += entry.amount;
+                    else totalBurned += Math.abs(entry.amount);
+                });
+            } else if (dayData.manualCalories > 0) {
+                // Fallback if no calorieLog but has manualCalories
+                totalEaten += dayData.manualCalories;
+            }
+        }
+
+        current.setDate(current.getDate() + 1);
+    }
+
+    return { eaten: totalEaten, burned: totalBurned };
+}
+
+function updateWeeklyTotals() {
+    const today = new Date();
+    const weekStart = getStartOfWeek(today);
+    weekStart.setDate(weekStart.getDate() + currentWeekOffset * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
+    const totals = calculateTotalsForDateRange(weekStart, weekEnd);
+    updateTotalsDisplay(totals.eaten, totals.burned, 'week in', 'week out');
+}
+
+function updateMonthlyTotals() {
+    const today = new Date();
+    const monthStart = getStartOfMonth(today);
+    monthStart.setMonth(monthStart.getMonth() + currentMonthOffset);
+    const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
+
+    const totals = calculateTotalsForDateRange(monthStart, monthEnd);
+    updateTotalsDisplay(totals.eaten, totals.burned, 'month in', 'month out');
 }
 
 function updateDotsDisplay() {
@@ -1368,9 +1443,11 @@ function handleWeekNav(direction) {
     if (direction === -1) {
         currentWeekOffset--;
         updateWeekCalendar();
+        updateWeeklyTotals();
     } else if (direction === 1 && currentWeekOffset < 0) {
         currentWeekOffset++;
         updateWeekCalendar();
+        updateWeeklyTotals();
     }
 }
 
@@ -1401,9 +1478,11 @@ function handleMonthNav(direction) {
     if (direction === -1) {
         currentMonthOffset--;
         updateMonthCalendar();
+        updateMonthlyTotals();
     } else if (direction === 1 && currentMonthOffset < 0) {
         currentMonthOffset++;
         updateMonthCalendar();
+        updateMonthlyTotals();
     }
 }
 

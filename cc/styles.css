@@ -636,11 +636,7 @@ body.auto-theme::before {
     color: var(--color-subtract);
 }
 
-/* Hide daily totals in week/month view */
-body.week-view-active .daily-totals,
-body.month-view-active .daily-totals {
-    display: none;
-}
+/* Show totals in all views - label changes via JS */
 
 /* ============================================
    VIEW TOGGLE
