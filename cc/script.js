@@ -69,7 +69,8 @@ function debouncedCloudSync() {
     clearTimeout(syncTimeout);
     syncStatus = 'syncing';
     updateSyncIndicator();
-    syncTimeout = setTimeout(saveToCloud, 2000);
+    // Reduced from 2000ms to 500ms to minimize data loss window
+    syncTimeout = setTimeout(saveToCloud, 500);
 }
 
 // Initialize state
@@ -92,14 +93,29 @@ let currentMonthOffset = 0; // 0 = current month, -1 = previous month, etc.
 
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
-    // Try to load from cloud first
+    // Load from both localStorage (already in state) and cloud
+    const localState = state; // Already loaded from localStorage
     const cloudState = await loadFromCloud();
+
     if (cloudState) {
-        state = cloudState;
+        // Compare timestamps - use the newer state
+        const localTime = localState?.lastUpdated || 0;
+        const cloudTime = cloudState.lastUpdated || 0;
+
+        if (cloudTime > localTime) {
+            // Cloud is newer, use it
+            state = cloudState;
+            console.log('Using cloud state (newer)', { cloudTime, localTime });
+        } else if (localTime > cloudTime) {
+            // Local is newer, keep it and sync to cloud
+            console.log('Using local state (newer), syncing to cloud', { cloudTime, localTime });
+            debouncedCloudSync();
+        }
+        // If equal, keep local state
+
         // Ensure required fields exist
         state.dailyData = state.dailyData || {};
         state.calorieLog = state.calorieLog || [];
-        state.totalCalorieHistory = state.totalCalorieHistory ?? 0;
         localStorage.setItem('calorieCounterState', JSON.stringify(state));
         syncStatus = 'synced';
     }
