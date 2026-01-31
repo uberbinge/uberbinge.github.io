@@ -1147,9 +1147,26 @@ body.month-view-active .calorie-buttons {
     -webkit-appearance: none;
 }
 
-#edit-calories-input {
-    font-size: 18px;
-    max-width: 160px;
+.edit-calories-inputs {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+#edit-calories-eaten,
+#edit-calories-burned {
+    width: 100px;
+    font-size: 16px;
+    font-family: var(--font-mono);
+    text-align: center;
+}
+
+#edit-calories-eaten {
+    color: var(--color-add);
+}
+
+#edit-calories-burned {
+    color: var(--color-subtract);
 }
 
 #edit-calories-input:focus,

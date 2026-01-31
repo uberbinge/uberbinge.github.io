@@ -842,7 +842,7 @@ function updateTotalsDisplay(eaten, burned, eatenLabel, burnedLabel) {
 
 function calculateTotalsForDateRange(startDate, endDate) {
     let totalEaten = 0;
-    let totalBmrBurned = 0;
+    let totalBurned = 0; // BMR + manual workout
     const today = formatDateKey(new Date());
     const todayDate = new Date();
 
@@ -860,24 +860,39 @@ function calculateTotalsForDateRange(startDate, endDate) {
         }
 
         if (dateKey === today) {
-            // For today, use current state
-            if (state.manualCalories > 0) {
-                totalEaten += state.manualCalories;
+            // For today, parse calorieLog for eaten vs workout
+            if (state.calorieLog && state.calorieLog.length > 0) {
+                state.calorieLog.forEach(entry => {
+                    if (entry.amount > 0) {
+                        totalEaten += entry.amount;
+                    } else {
+                        totalBurned += Math.abs(entry.amount); // Workout
+                    }
+                });
             }
-            totalBmrBurned += calculateCaloriesBurned();
+            totalBurned += calculateCaloriesBurned(); // Add BMR
         } else if (state.dailyData && state.dailyData[dateKey]) {
-            // For past days, use stored data
+            // For past days, parse calorieLog if available
             const dayData = state.dailyData[dateKey];
-            if (dayData.manualCalories > 0) {
+            if (dayData.calorieLog && dayData.calorieLog.length > 0) {
+                dayData.calorieLog.forEach(entry => {
+                    if (entry.amount > 0) {
+                        totalEaten += entry.amount;
+                    } else {
+                        totalBurned += Math.abs(entry.amount); // Workout
+                    }
+                });
+            } else if (dayData.manualCalories > 0) {
+                // Fallback if no calorieLog
                 totalEaten += dayData.manualCalories;
             }
-            totalBmrBurned += dayData.bmr || state.bmr;
+            totalBurned += dayData.bmr || state.bmr; // Add BMR
         }
 
         current.setDate(current.getDate() + 1);
     }
 
-    return { eaten: totalEaten, burned: Math.round(totalBmrBurned) };
+    return { eaten: totalEaten, burned: Math.round(totalBurned) };
 }
 
 function updateWeeklyTotals() {
@@ -1345,7 +1360,8 @@ function closeLogModal() {
 function showEditCaloriesDialog(date, dateKey) {
     const modal = document.getElementById('edit-calories-modal');
     const dateDisplay = document.getElementById('edit-calories-date');
-    const caloriesInput = document.getElementById('edit-calories-input');
+    const eatenInput = document.getElementById('edit-calories-eaten');
+    const burnedInput = document.getElementById('edit-calories-burned');
     const saveButton = document.getElementById('edit-calories-save');
     const cancelButton = document.getElementById('edit-calories-cancel');
 
@@ -1353,22 +1369,35 @@ function showEditCaloriesDialog(date, dateKey) {
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     dateDisplay.textContent = date.toLocaleDateString(undefined, options);
 
-    // Get the current manual calories for this date
-    let manualCalories = 0;
+    // Get eaten and burned from calorieLog
+    let eaten = 0;
+    let burned = 0;
+    let calorieLog = [];
+
     if (dateKey === formatDateKey(state.dayStart)) {
-        // If it's today, use the current manual calories
-        manualCalories = state.manualCalories;
+        calorieLog = state.calorieLog || [];
     } else if (state.dailyData && state.dailyData[dateKey]) {
-        // If it's a past day, use the stored manual calories
-        manualCalories = state.dailyData[dateKey].manualCalories;
+        calorieLog = state.dailyData[dateKey].calorieLog || [];
     }
 
-    // Set the input value
-    caloriesInput.value = manualCalories;
+    // Parse calorieLog for eaten (positive) and burned (negative)
+    calorieLog.forEach(entry => {
+        if (entry.amount > 0) {
+            eaten += entry.amount;
+        } else {
+            burned += Math.abs(entry.amount);
+        }
+    });
+
+    // Set input values
+    eatenInput.value = eaten || '';
+    burnedInput.value = burned || '';
 
     // Set up the save button
     saveButton.onclick = () => {
-        saveEditedCalories(dateKey, parseInt(caloriesInput.value) || 0);
+        const newEaten = parseInt(eatenInput.value) || 0;
+        const newBurned = parseInt(burnedInput.value) || 0;
+        saveEditedCalories(dateKey, newEaten, newBurned);
         closeEditCaloriesModal();
     };
 
@@ -1386,25 +1415,29 @@ function closeEditCaloriesModal() {
 }
 
 // Save the edited calories
-function saveEditedCalories(dateKey, manualCalories) {
-    if (dateKey === formatDateKey(state.dayStart)) {
-        // If it's today, update the current manual calories
-        state.manualCalories = manualCalories;
+function saveEditedCalories(dateKey, eaten, burned) {
+    const manualCalories = eaten - burned;
+    const now = Date.now();
 
-        // Clear the calorie log and add a single entry for the manual edit
-        state.calorieLog = [{
-            amount: manualCalories,
-            timestamp: Date.now()
-        }];
+    // Create calorieLog entries for eaten and burned
+    const newCalorieLog = [];
+    if (eaten > 0) {
+        newCalorieLog.push({ amount: eaten, timestamp: now });
+    }
+    if (burned > 0) {
+        newCalorieLog.push({ amount: -burned, timestamp: now });
+    }
+
+    if (dateKey === formatDateKey(state.dayStart)) {
+        // If it's today, update the current state
+        state.manualCalories = manualCalories;
+        state.calorieLog = newCalorieLog;
     } else if (state.dailyData && state.dailyData[dateKey]) {
-        // If it's a past day, update the stored manual calories
+        // If it's a past day, update the stored data
         const dayData = state.dailyData[dateKey];
         dayData.manualCalories = manualCalories;
         dayData.netCalories = manualCalories - dayData.bmr;
-        dayData.calorieLog = [{
-            amount: manualCalories,
-            timestamp: Date.now()
-        }];
+        dayData.calorieLog = newCalorieLog;
     } else {
         // If there's no data for this date yet, create it
         state.dailyData[dateKey] = {
@@ -1412,10 +1445,7 @@ function saveEditedCalories(dateKey, manualCalories) {
             manualCalories: manualCalories,
             netCalories: manualCalories - state.bmr,
             date: dateKey,
-            calorieLog: [{
-                amount: manualCalories,
-                timestamp: Date.now()
-            }]
+            calorieLog: newCalorieLog
         };
     }
 

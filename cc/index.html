@@ -160,9 +160,15 @@
             <div class="modal-content">
                 <h3>Edit Calories</h3>
                 <p id="edit-calories-date"></p>
-                <div class="edit-calories-input-container">
-                    <label for="edit-calories-input">Manual Calories:</label>
-                    <input type="number" id="edit-calories-input" step="100">
+                <div class="edit-calories-inputs">
+                    <div class="edit-calories-input-container">
+                        <label for="edit-calories-eaten">Eaten:</label>
+                        <input type="number" id="edit-calories-eaten" step="100" min="0" placeholder="0">
+                    </div>
+                    <div class="edit-calories-input-container">
+                        <label for="edit-calories-burned">Workout:</label>
+                        <input type="number" id="edit-calories-burned" step="100" min="0" placeholder="0">
+                    </div>
                 </div>
                 <div class="modal-buttons">
                     <button id="edit-calories-save" class="modal-btn">Save</button>
